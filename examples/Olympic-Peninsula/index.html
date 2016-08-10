@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>A-Frame Terrain Loader Component - Olympic Peninsula</title>
+    <script src="../build.js"></script>
+  </head>
+  <body>
+    <a-scene antialias='true'>
+      <a-assets></a-assets>
+
+      <!-- Camera -->
+      <a-entity position="100 40 70" rotation="0 30 0">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Terrain -->
+      <a-entity terrain-loader='DEM: url(data/clipped-envi.bin); texture: url(data/olympic-texture.jpg); planeWidth: 287; planeHeight: 151; segmentsWidth: 287; segmentsHeight: 151; zPosition: 50;'></a-entity>
+
+      <!-- Sky -->
+      <a-sky color='grey'></a-sky>
+
+      <!-- Light -->
+      <a-entity light="type: ambient; color: #0xeeeeee"></a-entity>
+
+    </a-scene>
+  </body>
+</html>

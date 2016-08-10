@@ -1,0 +1,38 @@
+Driver: GTiff/GeoTIFF
+Files: C:/Users/Ben/Desktop/Noctis-lab/geometry/noctis-3500-clip.tif
+Size is 3461, 3461
+Coordinate System is:
+PROJCS["EQUIRECTANGULAR MARS",
+    GEOGCS["GCS_MARS",
+        DATUM["D_MARS",
+            SPHEROID["MARS_localRadius",3396036.8126024,0]],
+        PRIMEM["Reference_Meridian",0],
+        UNIT["degree",0.0174532925199433]],
+    PROJECTION["Equirectangular"],
+    PARAMETER["latitude_of_origin",0],
+    PARAMETER["central_meridian",267.81],
+    PARAMETER["standard_parallel_1",-5],
+    PARAMETER["false_easting",0],
+    PARAMETER["false_northing",0],
+    UNIT["metre",1,
+        AUTHORITY["EPSG","9001"]]]
+Origin = (-1641.000000000000000,-486705.000000000000000)
+Pixel Size = (1.011268419531927,-1.011268419531927)
+Metadata:
+  AREA_OR_POINT=Area
+  DATA_SET_ID="MRO-M-HIRISE-5-DTM-V1.0"
+  INSTRUMENT_ID="HIRISE"
+  INSTRUMENT_NAME="HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"
+  PRODUCER_INSTITUTION_NAME="UNIVERSITY OF ARIZONA"
+  PRODUCT_ID="DTEEC_016845_1715_017412_1715_A01"
+  TARGET_NAME="MARS"
+Image Structure Metadata:
+  INTERLEAVE=BAND
+Corner Coordinates:
+Upper Left  (   -1641.000, -486705.000) ( 92d13' 4.05"W,  8d12'40.96"S)
+Lower Left  (   -1641.000, -490205.000) ( 92d13' 4.05"W,  8d16'13.54"S)
+Upper Right (    1859.000, -486705.000) ( 92d 9'30.66"W,  8d12'40.96"S)
+Lower Right (    1859.000, -490205.000) ( 92d 9'30.66"W,  8d16'13.54"S)
+Center      (     109.000, -488455.000) ( 92d11'17.35"W,  8d14'27.25"S)
+Band 1 Block=3461x1 Type=Float32, ColorInterp=Gray
+  NoData Value=-3.4028226550889045e+038

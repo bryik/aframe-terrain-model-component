@@ -1,0 +1,15 @@
+ENVI
+description = {
+C:/Users/Ben/Desktop/Crater Floor and Central Mound in Gale Crater (MSL)/DTM/clipped-envi3.bin}
+samples = 200
+lines   = 200
+bands   = 1
+header offset = 0
+file type = ENVI Standard
+data type = 12
+interleave = bsq
+byte order = 0
+map info = {Equirectangular, 1, 1, 889, -283982, 4.98, 4.98}
+coordinate system string = {PROJCS["EQUIRECTANGULAR_MARS",GEOGCS["GCS_MARS",DATUM["D_MARS",SPHEROID["MARS_localRadius",3396190,0]],PRIMEM["Reference_Meridian",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Equidistant_Cylindrical"],PARAMETER["central_meridian",137.31],PARAMETER["standard_parallel_1",0],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1]]}
+band names = {
+Band 1}

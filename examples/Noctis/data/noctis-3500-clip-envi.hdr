@@ -1,0 +1,15 @@
+ENVI
+description = {
+C:/Users/Ben/Desktop/Noctis-lab/geometry/noctis-3500-clip-envi.bin}
+samples = 200
+lines   = 200
+bands   = 1
+header offset = 0
+file type = ENVI Standard
+data type = 12
+interleave = bsq
+byte order = 0
+map info = {Equirectangular, 1, 1, -1641, -486705, 17.5, 17.5}
+coordinate system string = {PROJCS["EQUIRECTANGULAR_MARS",GEOGCS["GCS_MARS",DATUM["D_MARS",SPHEROID["MARS_localRadius",3396036.8126024,0]],PRIMEM["Reference_Meridian",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Equidistant_Cylindrical"],PARAMETER["central_meridian",267.81],PARAMETER["standard_parallel_1",-5],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1]]}
+band names = {
+Band 1}

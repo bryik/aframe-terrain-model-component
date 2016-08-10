@@ -1,0 +1,27 @@
+<PAMDataset>
+  <Metadata domain="IMAGE_STRUCTURE">
+    <MDI key="INTERLEAVE">BAND</MDI>
+  </Metadata>
+  <Metadata domain="ENVI">
+    <MDI key="bands">1</MDI>
+    <MDI key="byte_order">0</MDI>
+    <MDI key="data_type">12</MDI>
+    <MDI key="file_type">ENVI Standard</MDI>
+    <MDI key="header_offset">0</MDI>
+    <MDI key="interleave">bsq</MDI>
+    <MDI key="lines">200</MDI>
+    <MDI key="samples">200</MDI>
+  </Metadata>
+  <Metadata>
+    <MDI key="AREA_OR_POINT">Area</MDI>
+    <MDI key="DATA_SET_ID">"MRO-M-HIRISE-5-DTM-V1.0"</MDI>
+    <MDI key="INSTRUMENT_ID">"HIRISE"</MDI>
+    <MDI key="INSTRUMENT_NAME">"HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"</MDI>
+    <MDI key="PRODUCER_INSTITUTION_NAME">"UNIVERSITY OF ARIZONA"</MDI>
+    <MDI key="PRODUCT_ID">"DTEEC_009650_1755_009716_1755_U01"</MDI>
+    <MDI key="TARGET_NAME">"MARS"</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <NoDataValue le_hex_equiv="00000060FFFFEFC7">-3.40282265508890E+038</NoDataValue>
+  </PAMRasterBand>
+</PAMDataset>

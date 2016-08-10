@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>A-Frame Terrain Loader Component - Crater Floor</title>
+    <script src="../build.js"></script>
+  </head>
+  <body>
+    <a-scene antialias='true'>
+      <a-assets></a-assets>
+
+      <!-- Camera -->
+      <a-entity position="-32 20 -33" rotation="0 -140 0">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Terrain -->
+      <a-entity terrain-loader='DEM: url(data/clipped-envi3.bin); texture: url(data/MRGB-handclipped.jpg); planeWidth: 99.8; planeHeight: 99.8; segmentsWidth: 199; segmentsHeight: 199; zPosition: 50;' ></a-entity>
+
+      <!-- Sky -->
+      <a-sky color='#ffd4a6'></a-sky>
+
+    </a-scene>
+  </body>
+</html>
