@@ -1,10 +1,10 @@
-## aframe-terrain-loader-component
+## aframe-terrain-model-component
 
 <p align="center">
   <img src="http://i.imgur.com/n1uvgZn.png"/>
 </p>
 
-A Terrain Loader component for [A-Frame](https://aframe.io). Uses Bjørn Sandvik's [terrain loader](https://github.com/turban/webgl-terrain/blob/master/lib/TerrainLoader.js) and based on code from a tutorial by [the L.A. Times](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/).
+A Terrain model component for [A-Frame](https://aframe.io). Uses Bjørn Sandvik's [terrain loader](https://github.com/turban/webgl-terrain/blob/master/lib/TerrainLoader.js) and based on code from a tutorial by [the L.A. Times](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/).
 
 The basic idea is to create a large plane with a certain width, height, and number of vertices. Each vertex is then repositioned based on elevation from a digital elevation model (DEM). The DEM must be in ENVI format--see [this blog post](http://blog.thematicmapping.org/2013/10/terrain-building-with-threejs-part-1.html) for conversion details.
 
@@ -12,7 +12,7 @@ The basic idea is to create a large plane with a certain width, height, and numb
 
 |    Property    |                                       Description                                       | Default Value |
 |:--------------:|:---------------------------------------------------------------------------------------:|:-------------:|
-|       DEM      |                  Path to "digital elevation model" data in ENVI format.                 |               |
+|       DEM      |                  Path to digital elevation model data in ENVI format.                 |               |
 |     texture    |                                     Path to texture.                                    |               |
 |   planeHeight  |                                 The height of the plane.                                |               |
 |   planeWidth   |                                 The width of the plane.                                 |               |
@@ -67,12 +67,12 @@ Install and use by directly including the [browser files](dist):
 <head>
   <title>My A-Frame Scene</title>
   <script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
-  <script src="https://rawgit.com/bryik/aframe-terrain-loader-component/master/dist/aframe-terrain-loader-component.min.js"></script>
+  <script src="https://rawgit.com/bryik/aframe-terrain-model-component/master/dist/aframe-terrain-model-component.min.js"></script>
 </head>
 
 <body>
   <a-scene>
-    <a-entity terrain-loader='DEM: url(data/noctis-3500-clip-envi.bin); texture: url(data/noctis-3500-clip-textureRED-resized.jpg); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100;'></a-entity>
+    <a-entity terrain-model='DEM: url(data/noctis-3500-clip-envi.bin); texture: url(data/noctis-3500-clip-textureRED-resized.jpg); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100;'></a-entity>
   </a-scene>
 </body>
 ```
@@ -82,12 +82,12 @@ Install and use by directly including the [browser files](dist):
 Install via npm:
 
 ```bash
-npm install aframe-terrain-loader-component
+npm install aframe-terrain-model-component
 ```
 
 Then register and use.
 
 ```js
 require('aframe');
-require('aframe-terrain-loader-component');
+require('aframe-terrain-model-component');
 ```

@@ -53,9 +53,9 @@
 	__webpack_require__(1);
 
 	/**
-	 * Terrain Loader component for A-Frame.
+	 * Terrain model component for A-Frame.
 	 */
-	AFRAME.registerComponent('terrain-loader', {
+	AFRAME.registerComponent('terrain-model', {
 	  schema: {
 	    DEM: {
 	      type: 'src'

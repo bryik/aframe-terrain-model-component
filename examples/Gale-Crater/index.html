@@ -1,24 +1,19 @@
 <html>
   <head>
-    <title>A-Frame Terrain Loader Component - Gale Crater</title>
+    <title>A-Frame Terrain Model Component - Gale Crater</title>
     <script src="../build.js"></script>
   </head>
   <body>
     <a-scene antialias='true'>
       <a-assets></a-assets>
 
+      <!-- Camera -->
       <a-entity position="0 50 300">
-        <!-- Player -->
         <a-entity camera look-controls wasd-controls></a-entity>
-        <a-entity id="leftController" static-body="shape: sphere; sphereRadius: 0.02;" vive-controls="hand: left"></a-entity>
-        <a-entity id="rightController" static-body="shape: sphere; sphereRadius: 0.02;" vive-controls="hand: right"></a-entity>
-
-        <!-- Platform -->
-        <a-box position='0 -3 0' color="grey" opacity="0.6" width='10' height='0.1' depth='10'></a-box>
       </a-entity>
 
       <!-- Terrain -->
-      <a-entity terrain-loader='DEM: url(data/Gale_HRSC_DEM_50m_300x285.bin); texture: url(data/Gale_texture_high_4096px.jpg); planeWidth: 2000; planeHeight: 1900; segmentsWidth: 299; segmentsHeight: 284; zPosition: 100;'></a-entity>
+      <a-entity terrain-model='DEM: url(data/Gale_HRSC_DEM_50m_300x285.bin); texture: url(data/Gale_texture_high_4096px.jpg); planeWidth: 2000; planeHeight: 1900; segmentsWidth: 299; segmentsHeight: 284; zPosition: 100;'></a-entity>
 
       <!-- Lights -->
       <a-entity light="type: directional; color: #ffffff; intensity: 0.75"></a-entity>
