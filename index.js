@@ -12,10 +12,10 @@ require('./lib/terrainloader.js');
 AFRAME.registerComponent('terrain-model', {
   schema: {
     DEM: {
-      type: 'src'
+      type: 'asset'
     },
     texture: {
-      type: 'src'
+      type: 'asset'
     },
     planeHeight: {
       type: 'number'
