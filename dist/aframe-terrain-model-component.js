@@ -42,7 +42,7 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* global AFRAME, THREE */
 
@@ -58,10 +58,10 @@
 	AFRAME.registerComponent('terrain-model', {
 	  schema: {
 	    DEM: {
-	      type: 'src'
+	      type: 'asset'
 	    },
 	    texture: {
-	      type: 'src'
+	      type: 'asset'
 	    },
 	    planeHeight: {
 	      type: 'number'
@@ -154,9 +154,9 @@
 	});
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * For loading binary data into a 3D terrain model
@@ -200,5 +200,5 @@
 	    }
 	};
 
-/***/ }
+/***/ })
 /******/ ]);
