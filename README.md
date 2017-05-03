@@ -43,7 +43,7 @@ These values seem to control the "resolution" of the elevation data. [The L.A. T
 
 Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling factor that alters terrain height. I'm not sure how to determine an accurate value for this; my tactic is to adjust until the result is aesthetically pleasing. The L.A. Times used a value of 100 for their Gale Crater experience, Sandvik used 5 for Jotunheimen, and I used 50 for the crater floor example.
 
-To use transparent terrain textures, there are two options. The simplest is to set 'transparent' to true and supply a texture in PNG format containin opacity information. (Transparent is false by default to limit unecessary demand on the GPU.) The only limitation to this approach is that a texture JPG plus an opacity JPG (black and white) may in some cases together be considerably smaller than a single PNG containing a transparent texture. Thus, you can alternatively provide an alphaMap texture (a greyscale image, in any format -- e.g. JPG if lossy compression is OK). Then this component will combine the texture and alphaMap. 
+To use transparent terrain textures, there are two options. The simplest is to set 'transparent' to true and supply a texture in PNG format containin opacity information. (Transparent is false by default to limit demand on the GPU.) The only limitation to this approach is that a texture JPG plus an opacity JPG (black and white) may in some cases together be considerably smaller than a single PNG containing a transparent texture. Thus, you can alternatively provide an alphaMap texture (a greyscale image, in any format -- e.g. JPG if lossy compression is OK). Then this component will combine the texture and alphaMap. 
 
 
 
