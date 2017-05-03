@@ -63,6 +63,9 @@
 	    texture: {
 	      type: 'asset'
 	    },
+	    alphaMap: {
+	      type: 'asset'
+	    },
 	    planeHeight: {
 	      type: 'number'
 	    },
@@ -81,6 +84,10 @@
 	      type: 'number',
 	      default: 1.5
 	    },
+	    transparent: {
+	      type: 'boolean',
+	      default: false
+	    },
 	    // If true, enable wireframe
 	    debug: { default: false }
 	  },
@@ -98,11 +105,13 @@
 	    var el = this.el;
 	    var data = this.data;
 	    var debug = data.debug;
+	    var transparentMaterial = data.transparent;
 	    var surface;
 
 	    // Texture and terrain URLs
 	    var terrainURL = data.DEM;
 	    var textureURL = data.texture;
+	    var alphaMapURL = data.alphaMap;
 
 	    // Utility to load the DEM data
 	    var terrainLoader = new THREE.TerrainLoader();
@@ -125,10 +134,15 @@
 	      var texture = textureLoader.load(textureURL);
 	      texture.anisotropy = 16;
 
+	      // Load alphaMap
+	      var alphaMap = alphaMapURL=="" ? null : new THREE.TextureLoader().load(alphaMapURL);
+
 	      // Create material
 	      var material = new THREE.MeshLambertMaterial({
-	        map: texture
-	      });
+	          map: texture,
+	          alphaMap: alphaMap,
+	          transparent: transparentMaterial || (alphaMap!=null)
+	        });
 
 	      // Create the surface mesh and register it under entity's object3DMap
 	      surface = new THREE.Mesh(geometry, material);
