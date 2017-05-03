@@ -12,7 +12,7 @@ The basic idea is to create a large plane with a certain width, height, and numb
 
 |    Property    |                                       Description                                       | Default Value |
 |:--------------:|:---------------------------------------------------------------------------------------:|:-------------:|
-|       DEM      |                  Path to digital elevation model data in ENVI format.                 |               |
+|       DEM      |                  Path to digital elevation model data in ENVI format.                   |               |
 |     texture    |                                     Path to texture.                                    |               |
 |   planeHeight  |                                 The height of the plane.                                |               |
 |   planeWidth   |                                 The width of the plane.                                 |               |
@@ -20,6 +20,8 @@ The basic idea is to create a large plane with a certain width, height, and numb
 |  segmentsWidth |                           Height of elevation grid minus one.                           |      199      |
 |    zPosition   | Vertical exaggeration.  Lower values will seem flatter, higher values more mountainous. |      1.5      |
 |      debug     |                                     Adds a wireframe                                    |     false     |
+|  transparent   |          Set to true if your texture contains opacity channel (only PNGs)               |     false     |
+|     alphaMap   |                 Path to a texture to control the alpha channel                          |               |
 
 The relationship between these properties and the DEM data may not be straightforward. 
 
@@ -40,6 +42,10 @@ These values seem to control the "resolution" of the elevation data. [The L.A. T
 >"You'll notice we specified the -outsize parameter, which specifies the number of data points in the output file, and the number of vertices in the plane in the Three.js scene. This can be as high or low as you want, but you'll find that larger values can be very taxing on the graphics processor when rendering the scene. We found that using 300 x 285 provided a good amount of detail without stressing out the GPU too much. For phones, we used a smaller file, 200 x 190, and for some phones even went to a 100 x 95 file, to ensure that the interactive ran smoothly."
 
 Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling factor that alters terrain height. I'm not sure how to determine an accurate value for this; my tactic is to adjust until the result is aesthetically pleasing. The L.A. Times used a value of 100 for their Gale Crater experience, Sandvik used 5 for Jotunheimen, and I used 50 for the crater floor example.
+
+To use transparent terrain textures, there are two options. The simplest is to set 'transparent' to true and supply a texture in PNG format containin opacity information. (Transparent is false by default to limit unecessary demand on the GPU.) The only limitation to this approach is that a texture JPG plus an opacity JPG (black and white) may in some cases together be considerably smaller than a single PNG containing a transparent texture. Thus, you can alternatively provide an alphaMap texture (a greyscale image, in any format -- e.g. JPG if lossy compression is OK). Then this component will combine the texture and alphaMap. 
+
+
 
 ### References
 
