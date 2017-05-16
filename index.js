@@ -114,8 +114,10 @@ AFRAME.registerComponent('terrain-model', {
 
       // Wireframe debug mode
       if (debug) {
-        wireframe = new THREE.WireframeHelper( surface, 0x4caf50 );
-        el.setObject3D('terrain-wireframe', wireframe);
+        var wireGeometry = new THREE.WireframeGeometry(geometry);
+        var wireMaterial = new THREE.LineBasicMaterial({color: 0x4caf50, linewidth: 2});
+        var wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
+        surface.add(wireMesh);
       }
     });
   },
