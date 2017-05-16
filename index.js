@@ -49,7 +49,7 @@ AFRAME.registerComponent('terrain-model', {
   /**
    * Set if component needs multiple instancing.
    */
-  multiple: false,
+  multiple: true,
 
   /**
    * Called when component is attached and when component data changes.
@@ -71,17 +71,26 @@ AFRAME.registerComponent('terrain-model', {
     var terrainLoader = new THREE.TerrainLoader();
 
     // Create the plane geometry
-    var geometry = new THREE.PlaneGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
+    var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
 
     // z-scaling factor
     var zPosition = data.zPosition;
 
     // The terrainLoader loads the DEM file and defines a function to be called when the file is successfully downloaded.
     terrainLoader.load(terrainURL, function (data) {
-      // Adjust each vertex in the plane to correspond to the height value in the DEM file.
-      for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-        geometry.vertices[i].z = data[i] / 65535 * zPosition;
+
+      var verts = geometry.attributes.position;
+
+      /**
+       * Adjust each vertex in the plane to correspond to the height value in the DEM file.
+       * vi = The index of the current vertex's Z position in the plane geometry's position attribute array.
+       * di = The index of the current data value.
+       * tv = The total number of vertices in the plane geometry.
+       */
+      for (var vi = 2, di = 0, tv = verts.count*3; vi < tv; vi+=3, di++) {
+        verts.array[vi] = data[di] / 65535 * zPosition;
       }
+      geometry.attributes.position.needsUpdate = true;
 
       // Load texture, apply maximum anisotropy
       var textureLoader = new THREE.TextureLoader();
@@ -89,7 +98,7 @@ AFRAME.registerComponent('terrain-model', {
       texture.anisotropy = 16;
 
       // Load alphaMap
-      var alphaMap = alphaMapURL=="" ? null : new THREE.TextureLoader().load(alphaMapURL);
+      var alphaMap = alphaMapURL==="" ? null : new THREE.TextureLoader().load(alphaMapURL);
 
       // Create material
       var material = new THREE.MeshLambertMaterial({
