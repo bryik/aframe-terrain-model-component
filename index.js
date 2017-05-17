@@ -235,32 +235,65 @@ AFRAME.registerComponent('textured-terrain-model', {
         pAB.setZ(i, heightValue);
       }
 
-      // Load textures and alphaMap (if applicable), apply maximum anisotropy
-      var textureLoader = new THREE.TextureLoader();
-      var texture = (data.texture === "") ? null : textureLoader.load(data.texture);
-      //texture.anisotropy = 16;
-      var alphaMap = (data.alphaMap === "") ? null : textureLoader.load(data.alphaMap);
+      /**
+       * So begins a rather complicated dance to deal with loading multiple textures and handling the case where alphaMap is
+       * not used.
+       * 1) filter out textures without URLs
+       * 2) Promisify the remaining textures
+       * 3) When all textures have loaded, finish building the terrain.
+       */
+      var textures = [data.texture, data.alphaMap];
+      textures = textures.filter(function removeUnused(val) {
+        return val !== "";
+      });
 
-      var material = new THREE.MeshLambertMaterial({
-          map: texture,
-          alphaMap: alphaMap,
-          transparent: data.transparent || (alphaMap!=null)
-        });
+      textures = textures.map(function convertToPromises(val) {
+        return self.loadTexture(val);
+      })
 
-      // Create the surface mesh and register it under entity's object3DMap
-      var surface = new THREE.Mesh(geometry, material);
-      surface.rotation.x = -90 * Math.PI / 180;
-      el.setObject3D('terrain', surface);
 
-      // Wireframe
-      if (data.wireframe) {
-        let wireGeometry = new THREE.WireframeGeometry(geometry);
-        let wireMaterial = new THREE.LineBasicMaterial({color: 0x808080, linewidth: 1});
-        let wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
-        wireMesh.material.opacity = 0.30;
-        wireMesh.material.transparent = true;
-        surface.add(wireMesh);
-      }
+      var promiseTextures = Promise.all(textures);
+      promiseTextures.then(function finishSetup(loadedTextures) {
+
+        var material = new THREE.MeshLambertMaterial();
+
+        var texture = loadedTextures[0];
+        texture.anisotropy = 16;
+        material.map = texture;
+
+        if (data.alphaMap !== "") {
+          material.alphaMap = loadedTextures[1];
+          material.transparent = true;
+        }
+
+        // Create the surface mesh and register it under entity's object3DMap
+        var surface = new THREE.Mesh(geometry, material);
+        surface.rotation.x = -90 * Math.PI / 180;
+        el.setObject3D('terrain', surface);
+
+        // Wireframe
+        if (data.wireframe) {
+          let wireGeometry = new THREE.WireframeGeometry(geometry);
+          let wireMaterial = new THREE.LineBasicMaterial({color: 0x808080, linewidth: 1});
+          let wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
+          wireMesh.material.opacity = 0.30;
+          wireMesh.material.transparent = true;
+          surface.add(wireMesh);
+        }
+      })
+
+    });
+  },
+
+  /**
+   * Loads a texture with a promise.
+   * Based on: https://github.com/aframevr/aframe/blob/master/src/components/text.js#L371
+   */
+  loadTexture: function(src) {
+    return new Promise(function (resolve, reject) {
+      new THREE.TextureLoader().load(src, function(texture) {
+        resolve(texture);
+      });
     });
   },
 
