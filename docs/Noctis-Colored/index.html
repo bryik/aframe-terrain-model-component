@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>A-Frame Terrain Model Component - Noctis Colored</title>
+    <script src="../build.js"></script>
+  </head>
+  <body>
+    <a-scene antialias='true'>
+      <a-assets></a-assets>
+
+      <!-- Camera -->
+      <a-entity position="0 80 -200" rotation="0 180 0">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Terrain-->
+      <a-entity terrain-model='DEM: url(../Noctis/data/noctis-3500-clip-envi.bin); wireframe: true; planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100'></a-entity>
+
+      <!-- Sky -->
+      <a-sky color='lightgrey'></a-sky>
+
+    </a-scene>
+  </body>
+</html>
