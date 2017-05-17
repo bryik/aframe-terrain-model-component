@@ -79,18 +79,17 @@ AFRAME.registerComponent('terrain-model', {
     // The terrainLoader loads the DEM file and defines a function to be called when the file is successfully downloaded.
     terrainLoader.load(terrainURL, function (data) {
 
-      var verts = geometry.attributes.position;
+      // The position attribute buffer
+      var pAB = geometry.getAttribute('position');
 
       /**
-       * Adjust each vertex in the plane to correspond to the height value in the DEM file.
-       * vi = The index of the current vertex's Z position in the plane geometry's position attribute array.
-       * di = The index of the current data value.
-       * tv = The total number of vertices in the plane geometry.
+       * Set the z-component of every vector in the position attribute buffer to the (adjusted) height value from the DEM.
+       * pAB.count = the number of vertices in the plane
        */
-      for (var vi = 2, di = 0, tv = verts.count*3; vi < tv; vi+=3, di++) {
-        verts.array[vi] = data[di] / 65535 * zPosition;
+      for (var i = 0; i < pAB.count; i++) {
+        var heightValue = data[i] / 65535 * zPosition;
+        pAB.setZ(i, heightValue);
       }
-      geometry.attributes.position.needsUpdate = true;
 
       // Load texture, apply maximum anisotropy
       var textureLoader = new THREE.TextureLoader();
