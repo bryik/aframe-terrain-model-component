@@ -155,17 +155,10 @@ AFRAME.registerComponent('terrain-model', {
 
 /**
  * Variant of terrain model component geared towards textures.
- * Currently needs to be refractored.
  */
 AFRAME.registerComponent('textured-terrain-model', {
   schema: {
     DEM: {
-      type: 'asset'
-    },
-    texture: {
-      type: 'asset'
-    },
-    alphaMap: {
       type: 'asset'
     },
     planeHeight: {
@@ -186,11 +179,17 @@ AFRAME.registerComponent('textured-terrain-model', {
       type: 'number',
       default: 1.5
     },
+    texture: {
+      type: 'asset'
+    },
+    alphaMap: {
+      type: 'asset'
+    },
     transparent: {
       type: 'boolean',
       default: false
     },
-    debug: {
+    wireframe: {
       type: 'boolean',
       default: false
     }
@@ -204,30 +203,25 @@ AFRAME.registerComponent('textured-terrain-model', {
   /**
    * Called when component is attached and when component data changes.
    * Generally modifies the entity based on the data.
+   *
+   * Textures are not handled gracefully. There is some confusion over how they get loaded (async?) and how to interface with
+   * asset system
    */
   update: function (oldData) {
     // "self" is a reference to the component
     var self = this;
     var el = self.el;
     var data = self.data;
-    var debug = data.debug;
-    var transparentMaterial = data.transparent;
-
-    var terrainURL = data.DEM;
-    var textureURL = data.texture;
-    var alphaMapURL = data.alphaMap;
 
     var terrainLoader = new THREE.TerrainLoader();
-    var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
-
-    // z-scaling factor
-    var zPosition = data.zPosition;
 
     /*
      * terrainLoader loads the DEM file and triggers a callback.
      * "heightData" is a Uint16Array containing elevation values scaled to 0-65535 (i.e full 16-bit range)
      */
-    terrainLoader.load(terrainURL, function (heightData) {
+    terrainLoader.load(data.DEM, function (heightData) {
+
+      var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
 
       // The position attribute buffer
       var pAB = geometry.getAttribute('position');
@@ -235,23 +229,22 @@ AFRAME.registerComponent('textured-terrain-model', {
       /**
        * Set the z-component of every vector in the position attribute buffer to the (adjusted) height value from the DEM.
        * pAB.count = the number of vertices in the plane
-       * Also sets vertex color.
        */
       for (let i = 0; i < pAB.count; i++) {
-        let heightValue = heightData[i] / 65535 * zPosition;
+        let heightValue = heightData[i] / 65535 * data.zPosition;
         pAB.setZ(i, heightValue);
       }
 
       // Load textures and alphaMap (if applicable), apply maximum anisotropy
       var textureLoader = new THREE.TextureLoader();
-      var texture = (textureURL === "") ? null : textureLoader.load(textureURL);
+      var texture = (data.texture === "") ? null : textureLoader.load(data.texture);
       //texture.anisotropy = 16;
-      var alphaMap = (alphaMapURL === "") ? null : textureLoader.load(alphaMapURL);
+      var alphaMap = (data.alphaMap === "") ? null : textureLoader.load(data.alphaMap);
 
       var material = new THREE.MeshLambertMaterial({
           map: texture,
           alphaMap: alphaMap,
-          transparent: transparentMaterial || (alphaMap!=null)
+          transparent: data.transparent || (alphaMap!=null)
         });
 
       // Create the surface mesh and register it under entity's object3DMap
@@ -259,11 +252,11 @@ AFRAME.registerComponent('textured-terrain-model', {
       surface.rotation.x = -90 * Math.PI / 180;
       el.setObject3D('terrain', surface);
 
-      // Wireframe debug mode
-      if (debug) {
-        var wireGeometry = new THREE.WireframeGeometry(geometry);
-        var wireMaterial = new THREE.LineBasicMaterial({color: 0x808080, linewidth: 1});
-        var wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
+      // Wireframe
+      if (data.wireframe) {
+        let wireGeometry = new THREE.WireframeGeometry(geometry);
+        let wireMaterial = new THREE.LineBasicMaterial({color: 0x808080, linewidth: 1});
+        let wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
         wireMesh.material.opacity = 0.30;
         wireMesh.material.transparent = true;
         surface.add(wireMesh);
@@ -276,8 +269,7 @@ AFRAME.registerComponent('textured-terrain-model', {
    * Generally undoes all modifications to the entity.
    */
   remove: function () {
-    this.el.removeObject3D('terrain-wireframe');
     this.el.removeObject3D('terrain');
   }
-});
 
+});
