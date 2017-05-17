@@ -5,6 +5,7 @@ if (typeof AFRAME === 'undefined') {
 }
 
 require('./lib/terrainloader.js');
+var d3 = require('d3');
 
 /**
  * Terrain model component for A-Frame.
