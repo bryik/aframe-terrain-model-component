@@ -4,8 +4,11 @@
     <script src="../build.js"></script>
   </head>
   <body>
-    <a-scene antialias='true'>
-      <a-assets></a-assets>
+    <a-scene antialias="true">
+      <a-assets>
+        <a-asset-item id="GaleDEM" src="data/Gale_HRSC_DEM_50m_300x285.bin"></a-asset-item>
+        <img id="GaleTexture" src="data/Gale_texture_high_4096px.jpg">
+      </a-assets>
 
       <!-- Camera -->
       <a-entity position="0 50 300">
@@ -13,14 +16,14 @@
       </a-entity>
 
       <!-- Terrain -->
-      <a-entity textured-terrain-model='DEM: url(data/Gale_HRSC_DEM_50m_300x285.bin); texture: url(data/Gale_texture_high_4096px.jpg); planeWidth: 2000; planeHeight: 1900; segmentsWidth: 299; segmentsHeight: 284; zPosition: 100;'></a-entity>
+      <a-entity terrain-model="DEM: #GaleDEM; texture: #GaleTexture; planeWidth: 2000; planeHeight: 1900; segmentsWidth: 299; segmentsHeight: 284; zPosition: 100;"></a-entity>
 
       <!-- Lights -->
       <a-entity light="type: directional; color: #ffffff; intensity: 0.75"></a-entity>
       <a-entity light="type: ambient; color: #999999"></a-entity>
 
       <!-- Sky -->
-      <a-sky color='#ffd4a6'></a-sky>
+      <a-sky color="#ffd4a6"></a-sky>
 
     </a-scene>
   </body>
