@@ -74,7 +74,6 @@ AFRAME.registerComponent('terrain-model', {
      * "heightData" is a Uint16Array containing elevation values scaled to 0-65535 (i.e full 16-bit range)
      */
     terrainLoader.load(data.DEM, function (heightData) {
-
       var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
 
       // The position attribute buffer
@@ -97,24 +96,23 @@ AFRAME.registerComponent('terrain-model', {
        * 3) When all textures have loaded, finish building the terrain.
        */
       var textures = [data.texture, data.alphaMap];
-      textures = textures.filter(function removeUnused(val) {
-        return val !== "";
+      textures = textures.filter(function removeUnused (val) {
+        return val !== '';
       });
 
-      textures = textures.map(function convertToPromises(val) {
+      textures = textures.map(function convertToPromises (val) {
         return self.loadTexture(val);
       });
 
       var promiseTextures = Promise.all(textures);
-      promiseTextures.then(function finishSetup(loadedTextures) {
-
+      promiseTextures.then(function finishSetup (loadedTextures) {
         var material = new THREE.MeshLambertMaterial();
 
         var texture = loadedTextures[0];
         texture.anisotropy = 16;
         material.map = texture;
 
-        if (data.alphaMap !== "") {
+        if (data.alphaMap !== '') {
           material.alphaMap = loadedTextures[1];
           material.transparent = true;
         }
@@ -133,8 +131,7 @@ AFRAME.registerComponent('terrain-model', {
           wireMesh.material.transparent = true;
           surface.add(wireMesh);
         }
-      })
-
+      });
     });
   },
 
@@ -142,9 +139,9 @@ AFRAME.registerComponent('terrain-model', {
    * Loads a texture with a promise.
    * Based on: https://github.com/aframevr/aframe/blob/master/src/components/text.js#L371
    */
-  loadTexture: function(src) {
+  loadTexture: function (src) {
     return new Promise(function (resolve, reject) {
-      new THREE.TextureLoader().load(src, function(texture) {
+      new THREE.TextureLoader().load(src, function (texture) {
         resolve(texture);
       });
     });
@@ -159,7 +156,6 @@ AFRAME.registerComponent('terrain-model', {
   }
 
 });
-
 
 /**
  * Terrain model component with vertex colors. No textures.
@@ -220,7 +216,6 @@ AFRAME.registerComponent('color-terrain-model', {
      * "heightData" is a Uint16Array containing elevation values scaled to 0-65535 (i.e full 16-bit range)
      */
     terrainLoader.load(data.DEM, function (heightData) {
-
       var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
 
       // The position attribute buffer
@@ -248,8 +243,8 @@ AFRAME.registerComponent('color-terrain-model', {
       geometry.addAttribute('color', cBA);
 
       var material = new THREE.MeshLambertMaterial({
-          vertexColors: THREE.VertexColors
-        });
+        vertexColors: THREE.VertexColors
+      });
 
       // Create the surface mesh and register it under entity's object3DMap
       var surface = new THREE.Mesh(geometry, material);
@@ -280,29 +275,27 @@ AFRAME.registerComponent('color-terrain-model', {
    * Returns a sequential scale with chosen interpolater
    * Defaults to Viridis if unknown colorScheme is asked for (also logs error)
    */
-  getColorScale: function(colorScheme) {
-
-    switch(colorScheme) {
-      case "viridis":
+  getColorScale: function (colorScheme) {
+    switch (colorScheme) {
+      case 'viridis':
         return d3.scaleSequential(d3.interpolateViridis).domain([0, 65535]);
-      case "inferno":
+      case 'inferno':
         return d3.scaleSequential(d3.interpolateInferno).domain([0, 65535]);
-      case "magma":
+      case 'magma':
         return d3.scaleSequential(d3.interpolateMagma).domain([0, 65535]);
-      case "plasma":
+      case 'plasma':
         return d3.scaleSequential(d3.interpolatePlasma).domain([0, 65535]);
-      case "warm":
+      case 'warm':
         return d3.scaleSequential(d3.interpolateWarm).domain([0, 65535]);
-      case "cool":
+      case 'cool':
         return d3.scaleSequential(d3.interpolateCool).domain([0, 65535]);
-      case "rainbow":
+      case 'rainbow':
         return d3.scaleSequential(d3.interpolateRainbow).domain([0, 65535]);
-      case "cubehelix":
+      case 'cubehelix':
         return d3.scaleSequential(d3.interpolateCubehelixDefault).domain([0, 65535]);
       default:
-        console.log("terrain-model error: " + colorScheme + "is not a color scheme. Default color loaded instead.");
+        console.log('terrain-model error: ' + colorScheme + 'is not a color scheme. Default color loaded instead.');
         return d3.scaleSequential(d3.interpolateViridis).domain([0, 65535]);
     }
-
   }
 });

@@ -1,7 +1,7 @@
 {
   "name": "aframe-terrain-model-component",
   "version": "0.1.2",
-  "description": "Terrain model component for A-Frame.",
+  "description": "Terrain model components for A-Frame.",
   "main": "index.js",
   "scripts": {
     "build": "browserify docs/main.js -o docs/build.js",
@@ -45,6 +45,7 @@
   "semistandard": {
     "ignore": [
       "docs/build.js",
+      "lib/terrainloader.js",
       "dist/**"
     ]
   },
