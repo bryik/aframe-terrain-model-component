@@ -40,7 +40,8 @@
     "shelljs": "^0.7.3",
     "shx": "^0.1.1",
     "snazzy": "^4.0.0",
-    "webpack": "^1.13.2"
+    "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony-v2.8.22",
+    "webpack": "^2.5.1"
   },
   "semistandard": {
     "ignore": [
