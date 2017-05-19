@@ -1,6 +1,6 @@
 {
   "name": "aframe-terrain-model-component",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Terrain model components for A-Frame.",
   "main": "index.js",
   "scripts": {
