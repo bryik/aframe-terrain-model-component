@@ -6,9 +6,10 @@ if (typeof AFRAME === 'undefined') {
 
 require('./lib/terrainloader.js');
 const d3 = require('d3');
-const glsl = require('glslify');
-const vertexShader = glsl.file('./shaders/vertex.glsl');
-const fragmentShader = glsl.file('./shaders/fragment.glsl');
+
+// Because I don't know how to get Webpack to work with glslify.
+const vertexShader = require('./shaders/vertex.js');
+const fragmentShader = require('./shaders/fragment.js');
 
 /**
  * Terrain model component geared towards textures.

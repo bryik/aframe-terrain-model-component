@@ -50,11 +50,7 @@
       "dist/**"
     ]
   },
-  "browserify": {
-    "transform": ["glslify"]
-  },
   "dependencies": {
-    "d3": "^4.9.1",
-    "glslify": "^6.0.2"
+    "d3": "^4.9.1"
   }
 }

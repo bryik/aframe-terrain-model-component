@@ -1,4 +1,4 @@
-precision mediump float;
+module.exports = `precision mediump float;
 precision mediump int;
 
 uniform mat4 modelViewMatrix;
@@ -19,4 +19,4 @@ void main() {
   tPosition.z = tPosition.z * zPos;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4( tPosition, 1.0 );
-}
+}`;
