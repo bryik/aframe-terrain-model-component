@@ -1,7 +1,7 @@
 ## aframe-terrain-model-component
 
 <p align="center">
-  <img src="http://i.imgur.com/n1uvgZn.png"/>
+  <img src="header-image.png" width="728px" height="450px" />
 </p>
 
 Two terrain model components for [A-Frame](https://aframe.io). Uses Bjørn Sandvik's [terrain loader](https://github.com/turban/webgl-terrain/blob/master/lib/TerrainLoader.js) and based on code from a tutorial by [the L.A. Times](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/).
@@ -158,7 +158,7 @@ Install and use by directly including the [browser files](dist):
 <head>
   <title>My A-Frame Scene</title>
   <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-terrain-model-component@0.2.0/dist/aframe-terrain-model-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-terrain-model-component@0.2.1/dist/aframe-terrain-model-component.min.js"></script>
 </head>
 
 <body>
