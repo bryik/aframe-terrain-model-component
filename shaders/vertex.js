@@ -1,11 +1,7 @@
 module.exports = `precision mediump float;
 precision mediump int;
 
-//uniform mat4 modelViewMatrix;
-//uniform mat4 projectionMatrix;
-
 uniform float zPos;
-//attribute vec3 position;
 varying vec3 vPosition;
 
 varying vec3 vColor;
