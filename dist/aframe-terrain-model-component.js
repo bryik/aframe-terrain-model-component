@@ -16991,12 +16991,10 @@ Object.defineProperty(exports, '__esModule', { value: true });
 module.exports = `precision mediump float;
 precision mediump int;
 
-varying vec3 vPosition;
-varying vec4 vColor;
-varying vec4 vColor2;
+varying vec3 vColor;
 
 void main() {
-  gl_FragColor = vColor;
+  gl_FragColor = vec4(vColor, 1.0);
 }`;
 
 /***/ }),
@@ -17006,24 +17004,18 @@ void main() {
 module.exports = `precision mediump float;
 precision mediump int;
 
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
 uniform float zPos;
-
-attribute vec3 position;
-attribute vec4 color;
-
 varying vec3 vPosition;
-varying vec4 vColor;
+
+varying vec3 vColor;
 
 void main() {
-  vPosition = position;
-  vColor = color;
 
-  vec3 tPosition = vec3(position);
-  tPosition.z = tPosition.z * zPos;
+  vColor = vec3(color);
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( tPosition, 1.0 );
+  vPosition = vec3(position);
+  vPosition.z = vPosition.z * zPos;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
 }`;
 
 /***/ }),
@@ -17038,7 +17030,6 @@ if (typeof AFRAME === 'undefined') {
 
 __webpack_require__(0);
 const d3 = __webpack_require__(1);
-
 // Because I don't know how to get Webpack to work with glslify.
 const vertexShader = __webpack_require__(3);
 const fragmentShader = __webpack_require__(2);
@@ -17376,14 +17367,17 @@ AFRAME.registerComponent('color-terrain-model', {
 
       geometry.addAttribute('color', cAB);
 
-      // Setup material (zPosition uniform, wireframe option)
-      var material = new THREE.RawShaderMaterial( {
+      // Setup material (zPosition uniform, wireframe option).
+      // Note: originally I used RawShaderMaterial. This worked everywhere except Safari.
+      // Switching to ShaderMaterial, adding "vertexColors", and modifying the shaders seems to make it work...
+      var material = new THREE.ShaderMaterial( {
         uniforms: {
           zPos: {value: data.zPosition}
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
-        wireframe: data.wireframe
+        wireframe: data.wireframe,
+        vertexColors: THREE.VertexColors
       });
 
       // Create the surface mesh and register it under entity's object3DMap
