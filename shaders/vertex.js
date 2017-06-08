@@ -1,22 +1,20 @@
 module.exports = `precision mediump float;
 precision mediump int;
 
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
+//uniform mat4 modelViewMatrix;
+//uniform mat4 projectionMatrix;
+
 uniform float zPos;
-
-attribute vec3 position;
-attribute vec4 color;
-
+//attribute vec3 position;
 varying vec3 vPosition;
-varying vec4 vColor;
+
+varying vec3 vColor;
 
 void main() {
-  vPosition = position;
-  vColor = color;
 
-  vec3 tPosition = vec3(position);
-  tPosition.z = tPosition.z * zPos;
+  vColor = vec3(color);
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( tPosition, 1.0 );
+  vPosition = vec3(position);
+  vPosition.z = vPosition.z * zPos;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
 }`;

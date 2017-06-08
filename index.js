@@ -343,14 +343,17 @@ AFRAME.registerComponent('color-terrain-model', {
 
       geometry.addAttribute('color', cAB);
 
-      // Setup material (zPosition uniform, wireframe option)
-      var material = new THREE.RawShaderMaterial( {
+      // Setup material (zPosition uniform, wireframe option).
+      // Note: originally I used RawShaderMaterial. This worked everywhere except Safari.
+      // Switching to ShaderMaterial, adding "vertexColors", and modifying the shaders seems to make it work...
+      var material = new THREE.ShaderMaterial( {
         uniforms: {
           zPos: {value: data.zPosition}
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
-        wireframe: data.wireframe
+        wireframe: data.wireframe,
+        vertexColors: THREE.VertexColors
       });
 
       // Create the surface mesh and register it under entity's object3DMap
