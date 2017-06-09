@@ -215,17 +215,17 @@ AFRAME.registerComponent('color-terrain-model', {
     var data = this.data;
     var changedData = AFRAME.utils.diff(oldData, data);
 
-    if (this.hardUpdateNeeded(changedData)) {
-
-      // Remove old terrain (if it exists). this.heightData is used as a flag (property will only exist if terrain exists)
-      if ("heightData" in this) {
+    if (this.loaded) {
+      // Update
+      if (this.hardUpdateNeeded(changedData)) {
         this.remove();
+        this.buildTerrain();
+      } else {
+        this.softUpdate(changedData);
       }
-
+    } else {
+      // Create terrain for the first time.
       this.buildTerrain();
-    }
-    else {
-      this.softUpdate(changedData);
     }
 
   },
@@ -366,6 +366,7 @@ AFRAME.registerComponent('color-terrain-model', {
       self.material = material;      // zPosition and wireframe updates
       self.heightData = heightData;  // colorScheme updates
       self.cAB = cAB;
+      self.loaded = true;
     });
   },
 
