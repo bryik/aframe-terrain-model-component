@@ -138,6 +138,8 @@ The following D3 interpolators are available (images copied from [d3-scale](http
 - ["Discovering Gale Crater: How we did it"](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/) by Armand Emamdjomeh and Len Degroot
 - ["vr-interactives-three-js"](https://github.com/datadesk/vr-interactives-three-js) by Armand Emamdjomeh
 
+Till Hinrichs' [orbit-controls-component](https://github.com/tizzle/aframe-orbit-controls-component) is used in some of the examples.
+
 **Data (DEM and textures)**
 
 The Gale-Crater and Jotunheimen examples were created by journalists from the L.A. Times and Bjørn Sandvik respectively. The Jotunheimen data was obtained from [The Norwegian Mapping Authority](http://statkart.no/en/).
