@@ -158,7 +158,7 @@ Install and use by directly including the [browser files](dist):
 <head>
   <title>My A-Frame Scene</title>
   <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-terrain-model-component@0.2.2/dist/aframe-terrain-model-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-terrain-model-component@0.2.3/dist/aframe-terrain-model-component.min.js"></script>
 </head>
 
 <body>
