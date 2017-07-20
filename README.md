@@ -63,8 +63,8 @@ Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling fa
 For example,
 
 ```html
-<a-entity terrain-model='texture: #NoctisTexture;
-                                  DEM: #NoctisDEM;
+<a-entity terrain-model='texture: url(noctis-textureRED.jpg);
+                                  DEM: url(noctis-3500-clip-envi.bin);
                                   planeWidth: 346;
                                   planeHeight: 346;
                                   segmentsWidth: 199;
@@ -85,7 +85,7 @@ For example,
 
 ```html
 <a-entity color-terrain-model='colorScheme: magma;
-                               DEM: #NoctisDEM;
+                               DEM: url(noctis-3500-clip-envi.bin);
                                planeWidth: 346;
                                planeHeight: 346;
                                segmentsWidth: 199;
@@ -94,7 +94,7 @@ For example,
 </a-entity>
 ```
 
-Though the example above uses an ID selector for the DEM property, a plain url would also work: `url('../Noctis/data/noctis-3500-clip-envi.bin')`.
+While it is possible to use A-Frame's asset management system to load textures and terrain data, this is currently **not recommended**. See [this issue](https://github.com/bryik/aframe-terrain-model-component/issues/10) for more information.
 
 #### Color Schemes
 

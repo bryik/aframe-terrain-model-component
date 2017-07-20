@@ -5,10 +5,6 @@
   </head>
   <body>
     <a-scene antialias="true">
-      <a-assets>
-        <a-asset-item id="OlympicDEM" src="data/clipped-envi.bin"></a-asset-item>
-        <img id="OlympicTexture" src="data/olympic-texture.jpg">
-      </a-assets>
 
       <!-- Camera -->
       <a-entity position="100 40 70" rotation="0 30 0">
@@ -16,7 +12,7 @@
       </a-entity>
 
       <!-- Terrain -->
-      <a-entity terrain-model="DEM: #OlympicDEM; texture: #OlympicTexture; planeWidth: 287; planeHeight: 151; segmentsWidth: 287; segmentsHeight: 151; zPosition: 50;"></a-entity>
+      <a-entity terrain-model="DEM: url(data/clipped-envi.bin); texture: url(data/olympic-texture.jpg); planeWidth: 287; planeHeight: 151; segmentsWidth: 287; segmentsHeight: 151; zPosition: 50;"></a-entity>
 
       <!-- Sky -->
       <a-sky color="grey"></a-sky>

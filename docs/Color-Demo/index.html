@@ -6,8 +6,7 @@
   <body>
     <a-scene antialias="true">
       <a-assets>
-        <a-asset-item id="NoctisDEM" src="../Noctis/data/noctis-3500-clip-envi.bin"></a-asset-item>
-        <a-mixin id="terrain-mixin" color-terrain-model="DEM: #NoctisDEM; planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"></a-mixin>
+        <a-mixin id="terrain-mixin" color-terrain-model="DEM: url(../Noctis/data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"></a-mixin>
       </a-assets>
 
       <!-- ColorScheme label -->

@@ -2,13 +2,10 @@
   <head>
     <title>A-Frame Terrain Model Component - Noctis Colored</title>
     <script src="../build.js"></script>
-    <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.6/dist/aframe-orbit-controls-component.min.js"></script>
+    <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.9/dist/aframe-orbit-controls-component.min.js"></script>
   </head>
   <body>
     <a-scene antialias="true">
-      <a-assets>
-        <a-asset-item id="NoctisDEM" src="../Noctis/data/noctis-3500-clip-envi.bin"></a-asset-item>
-      </a-assets>
 
       <!-- Orbit cam -->
       <a-entity
@@ -28,7 +25,7 @@
 
       <!-- Terrain-->
       <a-entity id="terrain" color-terrain-model="colorScheme: inferno;
-                                       DEM: #NoctisDEM;
+                                       DEM: url(../Noctis/data/noctis-3500-clip-envi.bin);
                                        planeWidth: 346;
                                        planeHeight: 346;
                                        segmentsWidth: 199;

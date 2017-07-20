@@ -5,10 +5,6 @@
   </head>
   <body>
     <a-scene antialias="true">
-      <a-assets>
-        <a-asset-item id="JotunDEM" src="data/jotunheimen.bin"></a-asset-item>
-        <img id="JotunTexture" src="data/jotunheimen-texture.jpg">
-      </a-assets>
 
       <!-- Camera -->
       <a-entity position="0 20 25">
@@ -16,7 +12,7 @@
       </a-entity>
 
       <!-- Terrain -->
-      <a-entity terrain-model="DEM: #JotunDEM; texture: #JotunTexture; planeWidth: 60; planeHeight: 60; segmentsWidth: 199; segmentsHeight: 199; zPosition: 5;"></a-entity>
+      <a-entity terrain-model="DEM: url(data/jotunheimen.bin); texture: url(data/jotunheimen-texture.jpg); planeWidth: 60; planeHeight: 60; segmentsWidth: 199; segmentsHeight: 199; zPosition: 5;"></a-entity>
 
       <!-- Sky -->
       <a-sky color="grey"></a-sky>
