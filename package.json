@@ -8,8 +8,7 @@
     "dev": "budo docs/main.js:build.js --dir docs --port 8000 --live --open",
     "dist": "webpack index.js dist/aframe-terrain-model-component.js && webpack -p index.js dist/aframe-terrain-model-component.min.js",
     "lint": "semistandard -v | snazzy",
-    "postpublish": "npm run dist",
-    "ghpages": "npm run build"
+    "postpublish": "npm run dist"
   },
   "repository": {
     "type": "git",
