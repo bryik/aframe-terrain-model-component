@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>A-Frame Terrain Model Component - Noctis AR</title>
+    <script src="../build.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.4.8/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body style='margin : 0px; overflow: hidden;'>
+    <a-scene embedded arjs='sourceType: webcam;'>
+
+      <!-- Terrain-->
+      <a-entity position="0 0.3 0" scale="0.005 0.005 0.005" terrain-model="texture: url(../Noctis/data/noctis-3500-clip-textureRED-resized.jpg);
+                                       DEM: url(../Noctis/data/noctis-3500-clip-envi.bin);
+                                       planeWidth: 346;
+                                       planeHeight: 346;
+                                       segmentsWidth: 199;
+                                       segmentsHeight: 199;
+                                       zPosition: 100;
+                                       wireframe: false">
+      </a-entity>
+
+      <a-marker-camera preset='hiro'></a-marker-camera>
+
+    </a-scene>
+  </body>
+
+</html>
