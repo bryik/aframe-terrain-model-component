@@ -98,39 +98,39 @@ While it is possible to use A-Frame's asset management system to load textures a
 
 #### Color Schemes
 
-The following D3 interpolators are available (images copied from [d3-scale](https://github.com/d3/d3-scale)):
+The following D3 interpolators are available (images copied from [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic)):
 
-<a name="interpolateViridis" href="#interpolateViridis">#</a> <b>viridis</b> [<>](https://github.com/d3/d3-scale/blob/master/src/viridis.js "Source")
+<a name="interpolateViridis" href="#interpolateViridis">#</a> <b>viridis</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/viridis.png" width="100%" height="40" alt="viridis">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/viridis.png" width="100%" height="40" alt="viridis">
 
 <a name="interpolateInferno" href="#interpolateInferno">#</a> <b>inferno</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/inferno.png" width="100%" height="40" alt="inferno">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/inferno.png" width="100%" height="40" alt="inferno">
 
 <a name="interpolateMagma" href="#interpolateMagma">#</a> <b>magma</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/magma.png" width="100%" height="40" alt="magma">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/magma.png" width="100%" height="40" alt="magma">
 
 <a name="interpolatePlasma" href="#interpolatePlasma">#</a> <b>plasma</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/plasma.png" width="100%" height="40" alt="plasma">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/plasma.png" width="100%" height="40" alt="plasma">
 
 <a name="interpolateWarm" href="#interpolateWarm">#</a> <b>warm</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/warm.png" width="100%" height="40" alt="warm">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/warm.png" width="100%" height="40" alt="warm">
 
 <a name="interpolateCool" href="#interpolateCool">#</a> <b>cool</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/cool.png" width="100%" height="40" alt="cool">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/cool.png" width="100%" height="40" alt="cool">
 
-<a name="interpolateRainbow" href="#interpolateRainbow">#</a> <b>rainbow</b> [<>](https://github.com/d3/d3-scale/blob/master/src/rainbow.js "Source")
+<a name="interpolateRainbow" href="#interpolateRainbow">#</a> <b>rainbow</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/rainbow.png" width="100%" height="40" alt="rainbow">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/rainbow.png" width="100%" height="40" alt="rainbow">
 
-<a name="interpolateCubehelixDefault" href="#interpolateCubehelixDefault">#</a> <b>cubehelix</b> [<>](https://github.com/d3/d3-scale/blob/master/src/cubehelix.js "Source")
+<a name="interpolateCubehelixDefault" href="#interpolateCubehelixDefault">#</a> <b>cubehelix</b>
 
-<img src="https://raw.githubusercontent.com/d3/d3-scale/master/img/cubehelix.png" width="100%" height="40" alt="cubehelix">
+<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/cubehelix.png" width="100%" height="40" alt="cubehelix">
 
 ### References
 
