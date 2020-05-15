@@ -1,55 +1,57 @@
 /* global AFRAME, THREE */
 
-if (typeof AFRAME === 'undefined') {
-  throw new Error('Component attempted to register before AFRAME was available.');
+if (typeof AFRAME === "undefined") {
+  throw new Error(
+    "Component attempted to register before AFRAME was available."
+  );
 }
 
-require('./lib/terrainloader.js');
-const d3 = require('d3');
+require("./lib/terrainloader.js");
+const d3 = require("d3");
 // Because I don't know how to get Webpack to work with glslify.
-const vertexShader = require('./shaders/vertex.js');
-const fragmentShader = require('./shaders/fragment.js');
+const vertexShader = require("./shaders/vertex.js");
+const fragmentShader = require("./shaders/fragment.js");
 
 /**
  * Terrain model component geared towards textures.
  */
-AFRAME.registerComponent('terrain-model', {
+AFRAME.registerComponent("terrain-model", {
   schema: {
     DEM: {
-      type: 'asset'
+      type: "asset",
     },
     planeHeight: {
-      type: 'number'
+      type: "number",
     },
     planeWidth: {
-      type: 'number'
+      type: "number",
     },
     segmentsHeight: {
-      type: 'number',
-      default: 199
+      type: "number",
+      default: 199,
     },
     segmentsWidth: {
-      type: 'number',
-      default: 199
+      type: "number",
+      default: 199,
     },
     zPosition: {
-      type: 'number',
-      default: 1.5
+      type: "number",
+      default: 1.5,
     },
     texture: {
-      type: 'asset'
+      type: "asset",
     },
     alphaMap: {
-      type: 'asset'
+      type: "asset",
     },
     transparent: {
-      type: 'boolean',
-      default: false
+      type: "boolean",
+      default: false,
     },
     wireframe: {
-      type: 'boolean',
-      default: false
-    }
+      type: "boolean",
+      default: false,
+    },
   },
 
   /**
@@ -77,17 +79,22 @@ AFRAME.registerComponent('terrain-model', {
      * "heightData" is a Uint16Array containing elevation values scaled to 0-65535 (i.e full 16-bit range)
      */
     terrainLoader.load(data.DEM, function (heightData) {
-      var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
+      var geometry = new THREE.PlaneBufferGeometry(
+        data.planeWidth,
+        data.planeHeight,
+        data.segmentsWidth,
+        data.segmentsHeight
+      );
 
       // The position attribute buffer
-      var pAB = geometry.getAttribute('position');
+      var pAB = geometry.getAttribute("position");
 
       /**
        * Set the z-component of every vector in the position attribute buffer to the (adjusted) height value from the DEM.
        * pAB.count = the number of vertices in the plane
        */
       for (let i = 0; i < pAB.count; i++) {
-        let heightValue = heightData[i] / 65535 * data.zPosition;
+        let heightValue = (heightData[i] / 65535) * data.zPosition;
         pAB.setZ(i, heightValue);
       }
 
@@ -99,38 +106,41 @@ AFRAME.registerComponent('terrain-model', {
        * 3) When all textures have loaded, finish building the terrain.
        */
       var textures = [data.texture, data.alphaMap];
-      textures = textures.filter(function removeUnused (val) {
-        return val !== '';
+      textures = textures.filter(function removeUnused(val) {
+        return val !== "";
       });
 
-      textures = textures.map(function convertToPromises (val) {
+      textures = textures.map(function convertToPromises(val) {
         return self.loadTexture(val);
       });
 
       var promiseTextures = Promise.all(textures);
-      promiseTextures.then(function finishSetup (loadedTextures) {
+      promiseTextures.then(function finishSetup(loadedTextures) {
         var material = new THREE.MeshLambertMaterial();
 
         var texture = loadedTextures[0];
         texture.anisotropy = 16;
         material.map = texture;
 
-        if (data.alphaMap !== '') {
+        if (data.alphaMap !== "") {
           material.alphaMap = loadedTextures[1];
           material.transparent = true;
         }
 
         // Create the surface mesh and register it under entity's object3DMap
         var surface = new THREE.Mesh(geometry, material);
-        surface.rotation.x = -90 * Math.PI / 180;
-        el.setObject3D('terrain', surface);
+        surface.rotation.x = (-90 * Math.PI) / 180;
+        el.setObject3D("terrain", surface);
 
         // Wireframe
         if (data.wireframe) {
           let wireGeometry = new THREE.WireframeGeometry(geometry);
-          let wireMaterial = new THREE.LineBasicMaterial({color: 0x808080, linewidth: 1});
+          let wireMaterial = new THREE.LineBasicMaterial({
+            color: 0x808080,
+            linewidth: 1,
+          });
           let wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
-          wireMesh.material.opacity = 0.30;
+          wireMesh.material.opacity = 0.3;
           wireMesh.material.transparent = true;
           surface.add(wireMesh);
         }
@@ -155,49 +165,58 @@ AFRAME.registerComponent('terrain-model', {
    * Generally undoes all modifications to the entity.
    */
   remove: function () {
-    this.el.removeObject3D('terrain');
-  }
-
+    this.el.removeObject3D("terrain");
+  },
 });
 
 /**
  * Terrain model component with vertex colors. No textures.
  */
-AFRAME.registerComponent('color-terrain-model', {
+AFRAME.registerComponent("color-terrain-model", {
   schema: {
     DEM: {
-      type: 'asset',
-      default: "https://cdn.rawgit.com/bryik/aframe-terrain-model-component/401c00af/docs/Noctis/data/noctis-3500-clip-envi.bin"
+      type: "asset",
+      default:
+        "https://cdn.rawgit.com/bryik/aframe-terrain-model-component/401c00af/docs/Noctis/data/noctis-3500-clip-envi.bin",
     },
     planeHeight: {
-      type: 'number',
-      default: 346
+      type: "number",
+      default: 346,
     },
     planeWidth: {
-      type: 'number',
-      default: 346
+      type: "number",
+      default: 346,
     },
     segmentsHeight: {
-      type: 'number',
-      default: 199
+      type: "number",
+      default: 199,
     },
     segmentsWidth: {
-      type: 'number',
-      default: 199
+      type: "number",
+      default: 199,
     },
     zPosition: {
-      type: 'number',
-      default: 1.5
+      type: "number",
+      default: 1.5,
     },
     colorScheme: {
-      type: 'string',
-      default: 'viridis',
-      oneOf: ['viridis', 'inferno', 'magma', 'plasma', 'warm', 'cool', 'rainbow', 'cubehelix']
+      type: "string",
+      default: "viridis",
+      oneOf: [
+        "viridis",
+        "inferno",
+        "magma",
+        "plasma",
+        "warm",
+        "cool",
+        "rainbow",
+        "cubehelix",
+      ],
     },
     wireframe: {
-      type: 'boolean',
-      default: false
-    }
+      type: "boolean",
+      default: false,
+    },
   },
 
   /**
@@ -227,7 +246,6 @@ AFRAME.registerComponent('color-terrain-model', {
       // Create terrain for the first time.
       this.buildTerrain();
     }
-
   },
 
   /**
@@ -240,7 +258,7 @@ AFRAME.registerComponent('color-terrain-model', {
   remove: function () {
     this.geometry.dispose();
     this.material.dispose();
-    this.el.removeObject3D('terrain');
+    this.el.removeObject3D("terrain");
   },
 
   /* HELPERS */
@@ -254,9 +272,15 @@ AFRAME.registerComponent('color-terrain-model', {
    * All other properties require a hard update (mesh rebuild).
    */
   hardUpdateNeeded: function (changedData) {
-    var hardProps = ["DEM", "planeHeight", "planeWidth", "segmentsHeight", "segmentsWidth"];
+    var hardProps = [
+      "DEM",
+      "planeHeight",
+      "planeWidth",
+      "segmentsHeight",
+      "segmentsWidth",
+    ];
 
-    return hardProps.some(function(prop) {
+    return hardProps.some(function (prop) {
       return prop in changedData;
     });
   },
@@ -304,7 +328,7 @@ AFRAME.registerComponent('color-terrain-model', {
     return new Promise(function (resolve, reject) {
       new THREE.TerrainLoader().load(src, function (heightData) {
         resolve(heightData);
-      } );
+      });
     });
   },
 
@@ -318,10 +342,14 @@ AFRAME.registerComponent('color-terrain-model', {
     var terrain = this.loadTerrain(data.DEM);
 
     terrain.then(function finishSetup(heightData) {
-
       // Setup geometry and attribute buffers (position and color)
-      var geometry = new THREE.PlaneBufferGeometry(data.planeWidth, data.planeHeight, data.segmentsWidth, data.segmentsHeight);
-      var pAB = geometry.getAttribute('position');
+      var geometry = new THREE.PlaneBufferGeometry(
+        data.planeWidth,
+        data.planeHeight,
+        data.segmentsWidth,
+        data.segmentsHeight
+      );
+      var pAB = geometry.getAttribute("position");
 
       // Formula for size of new buffer attribute array is: numVertices * itemSize
       var colorArray = new Uint8Array(pAB.count * 3);
@@ -341,30 +369,30 @@ AFRAME.registerComponent('color-terrain-model', {
         cAB.setXYZ(i, colorValue.r, colorValue.g, colorValue.b);
       }
 
-      geometry.addAttribute('color', cAB);
+      geometry.addAttribute("color", cAB);
 
       // Setup material (zPosition uniform, wireframe option).
       // Note: originally I used RawShaderMaterial. This worked everywhere except Safari.
       // Switching to ShaderMaterial, adding "vertexColors", and modifying the shaders seems to make it work...
-      var material = new THREE.ShaderMaterial( {
+      var material = new THREE.ShaderMaterial({
         uniforms: {
-          zPos: {value: data.zPosition}
+          zPos: { value: data.zPosition },
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
         wireframe: data.wireframe,
-        vertexColors: THREE.VertexColors
+        vertexColors: THREE.VertexColors,
       });
 
       // Create the surface mesh and register it under entity's object3DMap
       var surface = new THREE.Mesh(geometry, material);
-      surface.rotation.x = -90 * Math.PI / 180;
-      self.el.setObject3D('terrain', surface);
+      surface.rotation.x = (-90 * Math.PI) / 180;
+      self.el.setObject3D("terrain", surface);
 
       // Save various properties for...
-      self.geometry = geometry;      // terrain removal (dispose geometry)
-      self.material = material;      // zPosition and wireframe updates
-      self.heightData = heightData;  // colorScheme updates
+      self.geometry = geometry; // terrain removal (dispose geometry)
+      self.material = material; // zPosition and wireframe updates
+      self.heightData = heightData; // colorScheme updates
       self.cAB = cAB;
       self.loaded = true;
     });
@@ -376,25 +404,31 @@ AFRAME.registerComponent('color-terrain-model', {
    */
   getColorScale: function (colorScheme) {
     switch (colorScheme) {
-      case 'viridis':
+      case "viridis":
         return d3.scaleSequential(d3.interpolateViridis).domain([0, 65535]);
-      case 'inferno':
+      case "inferno":
         return d3.scaleSequential(d3.interpolateInferno).domain([0, 65535]);
-      case 'magma':
+      case "magma":
         return d3.scaleSequential(d3.interpolateMagma).domain([0, 65535]);
-      case 'plasma':
+      case "plasma":
         return d3.scaleSequential(d3.interpolatePlasma).domain([0, 65535]);
-      case 'warm':
+      case "warm":
         return d3.scaleSequential(d3.interpolateWarm).domain([0, 65535]);
-      case 'cool':
+      case "cool":
         return d3.scaleSequential(d3.interpolateCool).domain([0, 65535]);
-      case 'rainbow':
+      case "rainbow":
         return d3.scaleSequential(d3.interpolateRainbow).domain([0, 65535]);
-      case 'cubehelix':
-        return d3.scaleSequential(d3.interpolateCubehelixDefault).domain([0, 65535]);
+      case "cubehelix":
+        return d3
+          .scaleSequential(d3.interpolateCubehelixDefault)
+          .domain([0, 65535]);
       default:
-        console.log('terrain-model error: ' + colorScheme + 'is not a color scheme. Default color loaded instead.');
+        console.log(
+          "terrain-model error: " +
+            colorScheme +
+            "is not a color scheme. Default color loaded instead."
+        );
         return d3.scaleSequential(d3.interpolateViridis).domain([0, 65535]);
     }
-  }
+  },
 });
