@@ -22,15 +22,15 @@ For both components, **DEM**, **planeHeight**, and **planeWidth** properties are
 
 ### API (shared)
 
-|    Property    |                                       Description                                       | Default Value |
-|:--------------:|:---------------------------------------------------------------------------------------:|:-------------:|
-|       DEM      |                  Path to digital elevation model data in ENVI format.                   |               |
-|   planeHeight  |                                 The height of the plane.                                |               |
-|   planeWidth   |                                 The width of the plane.                                 |               |
-| segmentsHeight |                            Width of elevation grid minus one.                           |      199      |
-|  segmentsWidth |                           Height of elevation grid minus one.                           |      199      |
-|    zPosition   | Vertical exaggeration.  Lower values will seem flatter, higher values more mountainous. |      1.5      |
-|   wireframe    |                                     Adds a wireframe                                    |     false     |
+|    Property    |                                      Description                                       | Default Value |
+| :------------: | :------------------------------------------------------------------------------------: | :-----------: |
+|      DEM       |                  Path to digital elevation model data in ENVI format.                  |               |
+|  planeHeight   |                                The height of the plane.                                |               |
+|   planeWidth   |                                The width of the plane.                                 |               |
+| segmentsHeight |                           Width of elevation grid minus one.                           |      199      |
+| segmentsWidth  |                          Height of elevation grid minus one.                           |      199      |
+|   zPosition    | Vertical exaggeration. Lower values will seem flatter, higher values more mountainous. |      1.5      |
+|   wireframe    |                                    Adds a wireframe                                    |     false     |
 
 The relationship between these properties and the DEM data may not be straightforward.
 
@@ -48,28 +48,30 @@ Corresponds to a segmentsHeight and segmentsWidth value of 199.
 
 These values seem to control the "resolution" of the elevation data. [The L.A. Times](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/) has this to say:
 
->"You'll notice we specified the -outsize parameter, which specifies the number of data points in the output file, and the number of vertices in the plane in the Three.js scene. This can be as high or low as you want, but you'll find that larger values can be very taxing on the graphics processor when rendering the scene. We found that using 300 x 285 provided a good amount of detail without stressing out the GPU too much. For phones, we used a smaller file, 200 x 190, and for some phones even went to a 100 x 95 file, to ensure that the interactive ran smoothly."
+> "You'll notice we specified the -outsize parameter, which specifies the number of data points in the output file, and the number of vertices in the plane in the Three.js scene. This can be as high or low as you want, but you'll find that larger values can be very taxing on the graphics processor when rendering the scene. We found that using 300 x 285 provided a good amount of detail without stressing out the GPU too much. For phones, we used a smaller file, 200 x 190, and for some phones even went to a 100 x 95 file, to ensure that the interactive ran smoothly."
 
 Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling factor that alters terrain height. I'm not sure how to determine an accurate value for this; my tactic is to adjust until the result is aesthetically pleasing. The L.A. Times used a value of 100 for their Gale Crater experience, Sandvik used 5 for Jotunheimen, and I used 50 for the crater floor example.
 
 ### API (`terrain-model`)
 
-|    Property    |                                       Description                                       | Default Value |
-|:--------------:|:---------------------------------------------------------------------------------------:|:-------------:|
-|     texture    |                                     Path to texture.                                    |               |
-|  transparent   |          Set to true if your texture contains opacity channel (only PNGs)               |     false     |
-|     alphaMap   |                 Path to a texture to control the alpha channel                          |               |
+|  Property   |                           Description                            | Default Value |
+| :---------: | :--------------------------------------------------------------: | :-----------: |
+|   texture   |                         Path to texture.                         |               |
+| transparent | Set to true if your texture contains opacity channel (only PNGs) |     false     |
+|  alphaMap   |          Path to a texture to control the alpha channel          |               |
 
 For example,
 
 ```html
-<a-entity terrain-model='texture: url(noctis-textureRED.jpg);
+<a-entity
+  terrain-model="texture: url(noctis-textureRED.jpg);
                                   DEM: url(noctis-3500-clip-envi.bin);
                                   planeWidth: 346;
                                   planeHeight: 346;
                                   segmentsWidth: 199;
                                   segmentsHeight: 199;
-                                  zPosition: 100'>
+                                  zPosition: 100"
+>
 </a-entity>
 ```
 
@@ -77,20 +79,22 @@ To use transparent terrain textures, there are two options. The simplest is to s
 
 ### API (`color-terrain-model`)
 
-|    Property    |                                       Description                                       | Default Value |
-|:--------------:|:---------------------------------------------------------------------------------------:|:-------------:|
-|  colorScheme   |          A string indicating the interpolator to use for vertex coloring                |   "viridis"   |
+|  Property   |                           Description                           | Default Value |
+| :---------: | :-------------------------------------------------------------: | :-----------: |
+| colorScheme | A string indicating the interpolator to use for vertex coloring |   "viridis"   |
 
 For example,
 
 ```html
-<a-entity color-terrain-model='colorScheme: magma;
+<a-entity
+  color-terrain-model="colorScheme: magma;
                                DEM: url(noctis-3500-clip-envi.bin);
                                planeWidth: 346;
                                planeHeight: 346;
                                segmentsWidth: 199;
                                segmentsHeight: 199;
-                               zPosition: 100'>
+                               zPosition: 100"
+>
 </a-entity>
 ```
 
@@ -157,17 +161,32 @@ All Mars examples use public domain data from [HiRISE](http://www.uahirise.org//
 Install and use by directly including the [browser files](dist):
 
 ```html
-<head>
-  <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-terrain-model-component@0.2.3/dist/aframe-terrain-model-component.min.js"></script>
-</head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My A-Frame Scene</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-terrain-model-component@0.2.3/dist/aframe-terrain-model-component.min.js"></script>
+    <script src="../build.js"></script>
+  </head>
+  <body>
+    <a-scene renderer="antialias: true">
+      <!-- Camera -->
+      <a-entity position="0 80 -200" rotation="0 180 0">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
 
-<body>
-  <a-scene>
-    <a-entity terrain-model='DEM: url(data/noctis-3500-clip-envi.bin); texture: url(data/noctis-3500-clip-textureRED-resized.jpg); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100;'></a-entity>
-  </a-scene>
-</body>
+      <!-- Terrain-->
+      <a-entity
+        terrain-model="texture: url(data/noctis-3500-clip-textureRED-resized.jpg); DEM: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"
+      ></a-entity>
+
+      <a-sky color="#fff"></a-sky>
+    </a-scene>
+  </body>
+</html>
 ```
 
 #### npm
@@ -181,6 +200,6 @@ npm install aframe-terrain-model-component
 Then register and use.
 
 ```js
-require('aframe');
-require('aframe-terrain-model-component');
+require("aframe");
+require("aframe-terrain-model-component");
 ```

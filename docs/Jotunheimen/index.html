@@ -1,25 +1,28 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A-Frame Terrain Model Component - Jotunheimen</title>
     <script src="../build.js"></script>
   </head>
   <body>
-    <a-scene antialias="true">
-
+    <a-scene renderer="antialias: true">
       <!-- Camera -->
       <a-entity position="0 20 25">
         <a-entity camera look-controls wasd-controls></a-entity>
       </a-entity>
 
       <!-- Terrain -->
-      <a-entity terrain-model="DEM: url(data/jotunheimen.bin); texture: url(data/jotunheimen-texture.jpg); planeWidth: 60; planeHeight: 60; segmentsWidth: 199; segmentsHeight: 199; zPosition: 5;"></a-entity>
+      <a-entity
+        terrain-model="DEM: url(data/jotunheimen.bin); texture: url(data/jotunheimen-texture.jpg); planeWidth: 60; planeHeight: 60; segmentsWidth: 199; segmentsHeight: 199; zPosition: 5;"
+      ></a-entity>
 
       <!-- Sky -->
       <a-sky color="grey"></a-sky>
 
       <!-- Light -->
       <a-entity light="type: ambient; color: #0xeeeeee"></a-entity>
-
     </a-scene>
   </body>
 </html>
