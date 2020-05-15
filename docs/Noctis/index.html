@@ -4,19 +4,19 @@
     <script src="../build.js"></script>
   </head>
   <body>
-    <a-scene antialias="true">
-
+    <a-scene renderer="antialias: true">
       <!-- Camera -->
       <a-entity position="0 80 -200" rotation="0 180 0">
         <a-entity camera look-controls wasd-controls></a-entity>
       </a-entity>
 
       <!-- Terrain-->
-      <a-entity terrain-model="texture: url(data/noctis-3500-clip-textureRED-resized.jpg); DEM: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"></a-entity>
+      <a-entity
+        terrain-model="texture: url(data/noctis-3500-clip-textureRED-resized.jpg); DEM: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"
+      ></a-entity>
 
       <!-- Sky -->
       <a-sky color="#fff"></a-sky>
-
     </a-scene>
   </body>
 </html>
