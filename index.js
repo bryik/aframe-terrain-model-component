@@ -7,24 +7,26 @@ if (typeof AFRAME === "undefined") {
 }
 
 require("./lib/terrainloader.js");
-const d3 = require("d3");
-// Because I don't know how to get Webpack to work with glslify.
-const vertexShader = require("./shaders/vertex.js");
-const fragmentShader = require("./shaders/fragment.js");
+// const d3 = require("d3");
+// // Because I don't know how to get Webpack to work with glslify.
+// const vertexShader = require("./shaders/vertex.js");
+// const fragmentShader = require("./shaders/fragment.js");
+
+// TODO:
+// - Add color option
 
 /**
- * Terrain model component geared towards textures.
+ * Terrain model component.
  */
 AFRAME.registerComponent("terrain-model", {
   schema: {
-    DEM: {
-      type: "asset",
-    },
     planeHeight: {
       type: "number",
+      default: 346,
     },
     planeWidth: {
       type: "number",
+      default: 346,
     },
     segmentsHeight: {
       type: "number",
@@ -38,397 +40,177 @@ AFRAME.registerComponent("terrain-model", {
       type: "number",
       default: 1.5,
     },
-    texture: {
+    dem: {
+      type: "asset",
+    },
+    map: {
       type: "asset",
     },
     alphaMap: {
       type: "asset",
     },
-    transparent: {
-      type: "boolean",
-      default: false,
-    },
     wireframe: {
       type: "boolean",
       default: false,
     },
   },
 
-  /**
-   * Set if component needs multiple instancing.
-   */
-  multiple: false,
+  init: function () {
+    const el = this.el;
+    const data = this.data;
 
-  /**
-   * Called when component is attached and when component data changes.
-   * Generally modifies the entity based on the data.
-   *
-   * Textures are not handled gracefully. There is some confusion over how they get loaded (async?) and how to interface with
-   * asset system
-   */
+    this.heightData = null;
+    this.terrainLoader = new THREE.TerrainLoader();
+    this.textureLoader = new THREE.TextureLoader();
+    this._updatePositionBuffer = this._updatePositionBuffer.bind(this);
+    this._toggleWireframe = this._toggleWireframe.bind(this);
+
+    // Setup geometry.
+    const { planeWidth, planeHeight, segmentsHeight, segmentsWidth } = data;
+    this.geometry = new THREE.PlaneBufferGeometry(
+      planeWidth,
+      planeHeight,
+      segmentsWidth,
+      segmentsHeight
+    );
+
+    // Setup material.
+    this.material = new THREE.MeshLambertMaterial();
+    // TODO: For some reason these dummy textures refuse to be replaced by loaded textures...
+    // this.material.map = new THREE.Texture();
+    // this.material.alphaMap = new THREE.Texture();
+
+    // Create the terrain mesh; rotate it to be parallel with the ground.
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.rotation.x = -90 * (Math.PI / 180);
+    el.setObject3D("terrain", this.mesh);
+  },
+
   update: function (oldData) {
-    // "self" is a reference to the component
-    var self = this;
-    var el = self.el;
-    var data = self.data;
+    const data = this.data;
+    const dem = data.dem;
+    const map = data.map;
+    const alphaMap = data.alphaMap;
+    const zPosition = data.zPosition;
+    const wireframe = data.wireframe;
 
-    var terrainLoader = new THREE.TerrainLoader();
-
-    /*
-     * terrainLoader loads the DEM file and triggers a callback.
-     * "heightData" is a Uint16Array containing elevation values scaled to 0-65535 (i.e full 16-bit range)
+    /**
+     * Callback for THREE.TerrainLoader().
+     * Sets the z-component of every vector in the position attribute buffer
+     * to the (adjusted) height value from the DEM.
+     *  positionBuffer.count === the number of vertices in the plane
+     * @param {number[]} heightData
      */
-    terrainLoader.load(data.DEM, function (heightData) {
-      var geometry = new THREE.PlaneBufferGeometry(
-        data.planeWidth,
-        data.planeHeight,
-        data.segmentsWidth,
-        data.segmentsHeight
-      );
+    function onTerrainLoad(heightData) {
+      this.heightData = heightData;
+      this._updatePositionBuffer();
+    }
 
-      // The position attribute buffer
-      var pAB = geometry.getAttribute("position");
-
-      /**
-       * Set the z-component of every vector in the position attribute buffer to the (adjusted) height value from the DEM.
-       * pAB.count = the number of vertices in the plane
-       */
-      for (let i = 0; i < pAB.count; i++) {
-        let heightValue = (heightData[i] / 65535) * data.zPosition;
-        pAB.setZ(i, heightValue);
-      }
-
-      /**
-       * So begins a rather complicated dance to deal with loading multiple textures and handling the case where alphaMap is
-       * not used.
-       * 1) filter out textures without URLs
-       * 2) Promisify the remaining textures
-       * 3) When all textures have loaded, finish building the terrain.
-       */
-      var textures = [data.texture, data.alphaMap];
-      textures = textures.filter(function removeUnused(val) {
-        return val !== "";
-      });
-
-      textures = textures.map(function convertToPromises(val) {
-        return self.loadTexture(val);
-      });
-
-      var promiseTextures = Promise.all(textures);
-      promiseTextures.then(function finishSetup(loadedTextures) {
-        var material = new THREE.MeshLambertMaterial();
-
-        var texture = loadedTextures[0];
-        texture.anisotropy = 16;
-        material.map = texture;
-
-        if (data.alphaMap !== "") {
-          material.alphaMap = loadedTextures[1];
-          material.transparent = true;
+    // Curried onTextureLoad callback.
+    // materialProp is either:
+    //   - 'map'      (for this.material.map)
+    //   - 'alphaMap' (for this.material.alphaMap)
+    const partialOnTextureLoad = (materialProp) => {
+      return (loadedTexture) => {
+        if (materialProp === "map" && this.data.map !== map) {
+          // The texture took too long to load. The entity now has a different
+          // map, so the map that was loaded cannot be used.
+          loadedTexture.dispose();
+          return;
         }
-
-        // Create the surface mesh and register it under entity's object3DMap
-        var surface = new THREE.Mesh(geometry, material);
-        surface.rotation.x = (-90 * Math.PI) / 180;
-        el.setObject3D("terrain", surface);
-
-        // Wireframe
-        if (data.wireframe) {
-          let wireGeometry = new THREE.WireframeGeometry(geometry);
-          let wireMaterial = new THREE.LineBasicMaterial({
-            color: 0x808080,
-            linewidth: 1,
-          });
-          let wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
-          wireMesh.material.opacity = 0.3;
-          wireMesh.material.transparent = true;
-          surface.add(wireMesh);
+        if (materialProp === "alphaMap" && this.data.alphaMap !== alphaMap) {
+          // Same idea as above, except the loaded texture is an alphaMap.
+          loadedTexture.dispose();
+          return;
         }
-      });
-    });
-  },
+        loadedTexture.anisotropy = 16;
+        const oldTexture = this.material[materialProp];
+        this.material[materialProp] = loadedTexture;
+        this.material.needsUpdate = true;
+        if (oldTexture) {
+          oldTexture.dispose();
+        }
+      };
+    };
 
-  /**
-   * Loads a texture with a promise.
-   * Based on: https://github.com/aframevr/aframe/blob/master/src/components/text.js#L371
-   */
-  loadTexture: function (src) {
-    return new Promise(function (resolve, reject) {
-      new THREE.TextureLoader().load(src, function (texture) {
-        resolve(texture);
-      });
-    });
-  },
+    if (dem !== oldData.dem) {
+      // DEM has updated, so load the new one.
+      this.terrainLoader.load(dem, onTerrainLoad.bind(this));
+    }
 
-  /**
-   * Called when a component is removed (e.g., via removeAttribute).
-   * Generally undoes all modifications to the entity.
-   */
-  remove: function () {
-    this.el.removeObject3D("terrain");
-  },
-});
+    if (map !== oldData.map) {
+      // Texture has updated, so load the new one.
+      this.textureLoader.load(map, partialOnTextureLoad("map"));
+    }
 
-/**
- * Terrain model component with vertex colors. No textures.
- */
-AFRAME.registerComponent("color-terrain-model", {
-  schema: {
-    DEM: {
-      type: "asset",
-      default:
-        "https://cdn.rawgit.com/bryik/aframe-terrain-model-component/401c00af/docs/Noctis/data/noctis-3500-clip-envi.bin",
-    },
-    planeHeight: {
-      type: "number",
-      default: 346,
-    },
-    planeWidth: {
-      type: "number",
-      default: 346,
-    },
-    segmentsHeight: {
-      type: "number",
-      default: 199,
-    },
-    segmentsWidth: {
-      type: "number",
-      default: 199,
-    },
-    zPosition: {
-      type: "number",
-      default: 1.5,
-    },
-    colorScheme: {
-      type: "string",
-      default: "viridis",
-      oneOf: [
-        "viridis",
-        "inferno",
-        "magma",
-        "plasma",
-        "warm",
-        "cool",
-        "rainbow",
-        "cubehelix",
-      ],
-    },
-    wireframe: {
-      type: "boolean",
-      default: false,
-    },
-  },
+    if (alphaMap !== oldData.alphaMap) {
+      // Alpha map has updated, so load the new one.
+      // Also turn on material transparency.
+      // TODO: Investigate how to turn this off if an alphaMap is removed.
+      this.material.transparent = true;
+      this.textureLoader.load(alphaMap, partialOnTextureLoad("alphaMap"));
+    }
 
-  /**
-   * Set if component needs multiple instancing.
-   */
-  multiple: false,
+    if (zPosition !== oldData.zPosition) {
+      // zPosition has changed, so re-calculate buffer positions.
+      this._updatePositionBuffer();
+    }
 
-  /**
-   * Called when component is attached and when component data changes.
-   * Generally modifies the entity based on the data.
-   *
-   * Detects what properties have changed, and then delegates update task accordingly.
-   */
-  update: function (oldData) {
-    var data = this.data;
-    var changedData = AFRAME.utils.diff(oldData, data);
-
-    if (this.loaded) {
-      // Update
-      if (this.hardUpdateNeeded(changedData)) {
-        this.remove();
-        this.buildTerrain();
-      } else {
-        this.softUpdate(changedData);
-      }
-    } else {
-      // Create terrain for the first time.
-      this.buildTerrain();
+    if (wireframe !== oldData.wireframe) {
+      // wire mode has either been activated or disactivated.
+      this._toggleWireframe();
     }
   },
 
-  /**
-   * Called when a component is removed (e.g., via removeAttribute).
-   * Generally undoes all modifications to the entity.
-   *
-   * I've tested this and it seems geometry and material must be disposed manually,
-   * "this.el.removeObject3D('terrain');" is not enough.
-   */
+  _updatePositionBuffer: function () {
+    if (!this.heightData) {
+      return;
+    }
+
+    let positionBuffer = this.geometry.getAttribute("position");
+    for (let i = 0; i < positionBuffer.count; i++) {
+      let heightValue = (this.heightData[i] / 65535) * this.data.zPosition;
+      positionBuffer.setZ(i, heightValue);
+    }
+    positionBuffer.needsUpdate = true;
+  },
+
+  _toggleWireframe: function () {
+    // TODO: Consider creating wireframe on init and hiding/revealing rather
+    // than creating the wireframe mesh on demand. Cons: wastes resources for
+    // people who don't care about wireframe. Pros: less lag when wireframe is
+    // turned on.
+
+    if (this.data.wireframe) {
+      // Add wireframe.
+      const wireGeometry = new THREE.WireframeGeometry(this.geometry);
+      const wireMaterial = new THREE.LineBasicMaterial({
+        color: 0x808080,
+        linewidth: 1,
+      });
+      let wireMesh = new THREE.LineSegments(wireGeometry, wireMaterial);
+      wireMesh.name = "terrain-wireframe";
+      wireMesh.material.opacity = 0.3;
+      wireMesh.material.transparent = true;
+      this.mesh.add(wireMesh);
+      return;
+    }
+
+    // Remove wireframe
+    let oldWireMesh = this.mesh.getObjectByName("terrain-wireframe");
+    if (!oldWireMesh) {
+      return;
+    }
+    oldWireMesh.geometry.dispose();
+    oldWireMesh.material.dispose();
+    this.mesh.remove(oldWireMesh);
+  },
+
   remove: function () {
     this.geometry.dispose();
+    this.material.map.dispose();
+    this.material.alphaMap.dispose();
     this.material.dispose();
     this.el.removeObject3D("terrain");
-  },
-
-  /* HELPERS */
-
-  /**
-   * Returns "true" if hard update is needed. Otherwise returns "false".
-   *
-   * zPosition can be updated instantly because it only requires a change in uniform.
-   * colorScheme can be updated quickly, because it only requires recomputing the color buffer.
-   *
-   * All other properties require a hard update (mesh rebuild).
-   */
-  hardUpdateNeeded: function (changedData) {
-    var hardProps = [
-      "DEM",
-      "planeHeight",
-      "planeWidth",
-      "segmentsHeight",
-      "segmentsWidth",
-    ];
-
-    return hardProps.some(function (prop) {
-      return prop in changedData;
-    });
-  },
-
-  /**
-   * Updates zPosition, colorScheme, and wireframe properties (if they have changed).
-   */
-  softUpdate: function (changedData) {
-    if ("zPosition" in changedData) {
-      this.material.uniforms.zPos.value = this.data.zPosition;
-    }
-
-    if ("wireframe" in changedData) {
-      this.material.wireframe = changedData.wireframe;
-    }
-
-    if ("colorScheme" in changedData) {
-      this.updateColors();
-    }
-  },
-
-  /**
-   * Changes color scheme.
-   *  1. Update this.colorScale
-   *  2. Recompute color buffer attribute
-   */
-  updateColors: function () {
-    var data = this.data;
-    var heightData = this.heightData;
-
-    var colorScale = this.getColorScale(data.colorScheme);
-
-    for (let i = 0; i < this.cAB.count; i++) {
-      let colorValue = d3.color(colorScale(heightData[i]));
-      this.cAB.setXYZ(i, colorValue.r, colorValue.g, colorValue.b);
-    }
-
-    this.cAB.needsUpdate = true;
-  },
-
-  /**
-   * Loads terrain with a promise.
-   */
-  loadTerrain: function (src) {
-    return new Promise(function (resolve, reject) {
-      new THREE.TerrainLoader().load(src, function (heightData) {
-        resolve(heightData);
-      });
-    });
-  },
-
-  /**
-   * Loads the terrain data, then constructs the terrain mesh.
-   */
-  buildTerrain: function () {
-    var self = this;
-    var data = this.data;
-
-    var terrain = this.loadTerrain(data.DEM);
-
-    terrain.then(function finishSetup(heightData) {
-      // Setup geometry and attribute buffers (position and color)
-      var geometry = new THREE.PlaneBufferGeometry(
-        data.planeWidth,
-        data.planeHeight,
-        data.segmentsWidth,
-        data.segmentsHeight
-      );
-      var pAB = geometry.getAttribute("position");
-
-      // Formula for size of new buffer attribute array is: numVertices * itemSize
-      var colorArray = new Uint8Array(pAB.count * 3);
-      var cAB = new THREE.BufferAttribute(colorArray, 3, true);
-      var colorScale = self.getColorScale(data.colorScheme);
-
-      /**
-       * Set the z-component of every vector in the position attribute buffer to the (adjusted) height value from the DEM.
-       * pAB.count = the number of vertices in the plane
-       * Also sets vertex color.
-       */
-      for (let i = 0; i < pAB.count; i++) {
-        let heightValue = heightData[i] / 65535;
-        pAB.setZ(i, heightValue);
-
-        let colorValue = d3.color(colorScale(heightData[i]));
-        cAB.setXYZ(i, colorValue.r, colorValue.g, colorValue.b);
-      }
-
-      geometry.addAttribute("color", cAB);
-
-      // Setup material (zPosition uniform, wireframe option).
-      // Note: originally I used RawShaderMaterial. This worked everywhere except Safari.
-      // Switching to ShaderMaterial, adding "vertexColors", and modifying the shaders seems to make it work...
-      var material = new THREE.ShaderMaterial({
-        uniforms: {
-          zPos: { value: data.zPosition },
-        },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        wireframe: data.wireframe,
-        vertexColors: THREE.VertexColors,
-      });
-
-      // Create the surface mesh and register it under entity's object3DMap
-      var surface = new THREE.Mesh(geometry, material);
-      surface.rotation.x = (-90 * Math.PI) / 180;
-      self.el.setObject3D("terrain", surface);
-
-      // Save various properties for...
-      self.geometry = geometry; // terrain removal (dispose geometry)
-      self.material = material; // zPosition and wireframe updates
-      self.heightData = heightData; // colorScheme updates
-      self.cAB = cAB;
-      self.loaded = true;
-    });
-  },
-
-  /**
-   * Returns a sequential scale with chosen interpolater.
-   * Defaults to Viridis if unknown colorScheme is asked for (also logs error).
-   */
-  getColorScale: function (colorScheme) {
-    switch (colorScheme) {
-      case "viridis":
-        return d3.scaleSequential(d3.interpolateViridis).domain([0, 65535]);
-      case "inferno":
-        return d3.scaleSequential(d3.interpolateInferno).domain([0, 65535]);
-      case "magma":
-        return d3.scaleSequential(d3.interpolateMagma).domain([0, 65535]);
-      case "plasma":
-        return d3.scaleSequential(d3.interpolatePlasma).domain([0, 65535]);
-      case "warm":
-        return d3.scaleSequential(d3.interpolateWarm).domain([0, 65535]);
-      case "cool":
-        return d3.scaleSequential(d3.interpolateCool).domain([0, 65535]);
-      case "rainbow":
-        return d3.scaleSequential(d3.interpolateRainbow).domain([0, 65535]);
-      case "cubehelix":
-        return d3
-          .scaleSequential(d3.interpolateCubehelixDefault)
-          .domain([0, 65535]);
-      default:
-        console.log(
-          "terrain-model error: " +
-            colorScheme +
-            "is not a color scheme. Default color loaded instead."
-        );
-        return d3.scaleSequential(d3.interpolateViridis).domain([0, 65535]);
-    }
   },
 });

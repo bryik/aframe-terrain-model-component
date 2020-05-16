@@ -12,7 +12,13 @@
 
       <!-- Terrain -->
       <a-entity
-        terrain-model="DEM: url(data/Gale_HRSC_DEM_50m_300x285.bin); texture: url(data/Gale_texture_high_4096px.jpg); planeWidth: 2000; planeHeight: 1900; segmentsWidth: 299; segmentsHeight: 284; zPosition: 100;"
+        terrain-model="dem: url(data/Gale_HRSC_DEM_50m_300x285.bin);
+          map: url(data/Gale_texture_high_4096px.jpg);
+          planeWidth: 2000;
+          planeHeight: 1900;
+          segmentsWidth: 299;
+          segmentsHeight: 284;
+          zPosition: 100;"
       ></a-entity>
 
       <!-- Lights -->
@@ -22,7 +28,7 @@
       <a-entity light="type: ambient; color: #999999"></a-entity>
 
       <!-- Sky -->
-      <a-sky color="#ffd4a6"></a-sky>
+      <a-sky color="#ffd4a6" radius="5000"></a-sky>
     </a-scene>
   </body>
 </html>

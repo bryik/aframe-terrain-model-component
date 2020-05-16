@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>A-Frame Terrain Model Component - Gale Crater Alpha</title>
+    <script src="../build.js"></script>
+    <script src="https://unpkg.com/aframe-orbit-controls@1.2.0/dist/aframe-orbit-controls.min.js"></script>
+  </head>
+  <body>
+    <a-scene renderer="antialias: true">
+      <a-entity
+        camera
+        orbit-controls="initialPosition: -816.062 469.603 -61.025"
+      ></a-entity>
+
+      <!-- Terrain -->
+      <a-entity
+        terrain-model="dem: url(data/Gale_HRSC_DEM_50m_300x285.bin);
+          map: url(data/Gale_texture_high_4096px.jpg);
+          planeWidth: 2000;
+          planeHeight: 1900;
+          segmentsWidth: 299;
+          segmentsHeight: 284;
+          zPosition: 100;
+          alphaMap: url(data/gale-crater-alpha.png);"
+      ></a-entity>
+
+      <!-- Lights -->
+      <a-entity
+        light="type: directional; color: #ffffff; intensity: 0.75"
+      ></a-entity>
+      <a-entity light="type: ambient; color: #999999"></a-entity>
+
+      <!-- Sky -->
+      <a-sky color="#ffd4a6" radius="5000"></a-sky>
+    </a-scene>
+  </body>
+</html>
