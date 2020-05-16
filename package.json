@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify docs/main.js -o docs/build.js",
-    "dev": "budo docs/main.js:build.js --dir docs --port 8000 --live --open --ssl",
+    "dev": "budo docs/main.js:build.js --dir docs --port 8000 --live --open",
     "dev-ssl": "budo docs/main.js:build.js --dir docs --port 8000 --live --open --ssl",
     "dist": "webpack index.js dist/aframe-terrain-model-component.js && webpack -p index.js dist/aframe-terrain-model-component.min.js",
     "postpublish": "npm run dist"
