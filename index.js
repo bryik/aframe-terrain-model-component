@@ -144,8 +144,8 @@ AFRAME.registerComponent("terrain-model", {
     }
 
     if (zPosition !== oldData.zPosition) {
-      // zPosition has changed, so re-calculate buffer positions.
-      this._updatePositionBuffer();
+      // zPosition has changed, so re-scale the mesh.
+      this.mesh.scale.set(1, 1, zPosition);
     }
 
     if (wireframe !== oldData.wireframe) {
@@ -161,7 +161,7 @@ AFRAME.registerComponent("terrain-model", {
 
     let positionBuffer = this.geometry.getAttribute("position");
     for (let i = 0; i < positionBuffer.count; i++) {
-      let heightValue = (this.heightData[i] / 65535) * this.data.zPosition;
+      let heightValue = this.heightData[i] / 65535;
       positionBuffer.setZ(i, heightValue);
     }
     positionBuffer.needsUpdate = true;
