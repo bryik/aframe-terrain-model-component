@@ -7,13 +7,6 @@ if (typeof AFRAME === "undefined") {
 }
 
 require("./lib/terrainloader.js");
-// const d3 = require("d3");
-// // Because I don't know how to get Webpack to work with glslify.
-// const vertexShader = require("./shaders/vertex.js");
-// const fragmentShader = require("./shaders/fragment.js");
-
-// TODO:
-// - Add color option
 
 /**
  * Terrain model component.
@@ -76,9 +69,6 @@ AFRAME.registerComponent("terrain-model", {
 
     // Setup material.
     this.material = new THREE.MeshLambertMaterial();
-    // TODO: For some reason these dummy textures refuse to be replaced by loaded textures...
-    // this.material.map = new THREE.Texture();
-    // this.material.alphaMap = new THREE.Texture();
 
     // Create the terrain mesh; rotate it to be parallel with the ground.
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -104,6 +94,7 @@ AFRAME.registerComponent("terrain-model", {
     function onTerrainLoad(heightData) {
       this.heightData = heightData;
       this._updatePositionBuffer();
+      this.el.emit("demLoaded", { dem });
     }
 
     // Curried onTextureLoad callback.
@@ -130,6 +121,7 @@ AFRAME.registerComponent("terrain-model", {
         if (oldTexture) {
           oldTexture.dispose();
         }
+        this.el.emit("textureLoaded", { type: materialProp });
       };
     };
 
@@ -173,6 +165,15 @@ AFRAME.registerComponent("terrain-model", {
       positionBuffer.setZ(i, heightValue);
     }
     positionBuffer.needsUpdate = true;
+
+    // Update wireframe
+    let oldWireMesh = this.mesh.getObjectByName("terrain-wireframe");
+    if (oldWireMesh) {
+      oldWireMesh.geometry.dispose();
+      const wireGeometry = new THREE.WireframeGeometry(this.geometry);
+      oldWireMesh.geometry = wireGeometry;
+    }
+    this.el.emit("positionBufferUpdated");
   },
 
   _toggleWireframe: function () {
@@ -181,7 +182,13 @@ AFRAME.registerComponent("terrain-model", {
     // people who don't care about wireframe. Pros: less lag when wireframe is
     // turned on.
 
-    if (this.data.wireframe) {
+    let oldWireMesh = this.mesh.getObjectByName("terrain-wireframe");
+    if (!oldWireMesh) {
+      // This is an inelegant way to prevent adding a wireframe when the
+      // component initializes.
+      if (!this.data.wireframe) {
+        return;
+      }
       // Add wireframe.
       const wireGeometry = new THREE.WireframeGeometry(this.geometry);
       const wireMaterial = new THREE.LineBasicMaterial({
@@ -197,10 +204,6 @@ AFRAME.registerComponent("terrain-model", {
     }
 
     // Remove wireframe
-    let oldWireMesh = this.mesh.getObjectByName("terrain-wireframe");
-    if (!oldWireMesh) {
-      return;
-    }
     oldWireMesh.geometry.dispose();
     oldWireMesh.material.dispose();
     this.mesh.remove(oldWireMesh);
