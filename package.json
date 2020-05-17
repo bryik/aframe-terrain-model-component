@@ -44,8 +44,5 @@
       "lib/terrainloader.js",
       "dist/**"
     ]
-  },
-  "dependencies": {
-    "d3": "^4.9.1"
   }
 }
