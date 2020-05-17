@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A-Frame Terrain Model Component - Color Demo</title>
-    <script src="../build.js"></script>
+    <script src="../../build.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
       <a-assets>
         <a-mixin
           id="terrain-mixin"
-          color-terrain-model="DEM: url(../Noctis/data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100; wireframe: true"
+          color-terrain-model="dem: url(../Noctis/data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100; wireframe: true"
         ></a-mixin>
       </a-assets>
 
