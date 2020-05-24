@@ -55,6 +55,7 @@ AFRAME.registerComponent("terrain-model", {
     this.heightData = null;
     this.terrainLoader = new THREE.TerrainLoader();
     this.textureLoader = new THREE.TextureLoader();
+    this._replaceTexture = this._replaceTexture.bind(this);
     this._updatePositionBuffer = this._updatePositionBuffer.bind(this);
     this._toggleWireframe = this._toggleWireframe.bind(this);
 
@@ -86,9 +87,6 @@ AFRAME.registerComponent("terrain-model", {
 
     /**
      * Callback for THREE.TerrainLoader().
-     * Sets the z-component of every vector in the position attribute buffer
-     * to the (adjusted) height value from the DEM.
-     *  positionBuffer.count === the number of vertices in the plane
      * @param {number[]} heightData
      */
     function onTerrainLoad(heightData) {
@@ -97,11 +95,14 @@ AFRAME.registerComponent("terrain-model", {
       this.el.emit("demLoaded", { dem });
     }
 
-    // Curried onTextureLoad callback.
-    // materialProp is either:
-    //   - 'map'      (for this.material.map)
-    //   - 'alphaMap' (for this.material.alphaMap)
-    const partialOnTextureLoad = (materialProp) => {
+    /**
+     * This is a curried function that returns a callback to pass to THREE.TextureLoader.load()
+     * This callback updates the terrain material as necessary. 'map' and 'alphaMap'
+     * texture loads are handled almost identically.
+     * @param {string} materialProp either 'map' (for this.material.map) or 'alphaMap' (for this.material.alphaMap)
+     * @returns {function}
+     */
+    const curriedOnTextureLoad = (materialProp) => {
       return (loadedTexture) => {
         if (materialProp === "map" && this.data.map !== map) {
           // The texture took too long to load. The entity now has a different
@@ -115,12 +116,7 @@ AFRAME.registerComponent("terrain-model", {
           return;
         }
         loadedTexture.anisotropy = 16;
-        const oldTexture = this.material[materialProp];
-        this.material[materialProp] = loadedTexture;
-        this.material.needsUpdate = true;
-        if (oldTexture) {
-          oldTexture.dispose();
-        }
+        this._replaceTexture(materialProp, loadedTexture);
         this.el.emit("textureLoaded", { type: materialProp });
       };
     };
@@ -131,16 +127,25 @@ AFRAME.registerComponent("terrain-model", {
     }
 
     if (map !== oldData.map) {
-      // Texture has updated, so load the new one.
-      this.textureLoader.load(map, partialOnTextureLoad("map"));
+      // When map is not set, it defaults to ""
+      if (!map) {
+        this._replaceTexture("map", null);
+      } else {
+        // Texture has updated, so load the new one.
+        this.textureLoader.load(map, curriedOnTextureLoad("map"));
+      }
     }
 
     if (alphaMap !== oldData.alphaMap) {
-      // Alpha map has updated, so load the new one.
-      // Also turn on material transparency.
-      // TODO: Investigate how to turn this off if an alphaMap is removed.
-      this.material.transparent = true;
-      this.textureLoader.load(alphaMap, partialOnTextureLoad("alphaMap"));
+      // When alphaMap is not set, it defaults to ""
+      if (!alphaMap) {
+        this._replaceTexture("alphaMap", null);
+      } else {
+        // Alpha map has updated, so load the new one.
+        // Also turn on material transparency.
+        this.material.transparent = true;
+        this.textureLoader.load(alphaMap, curriedOnTextureLoad("alphaMap"));
+      }
     }
 
     if (zPosition !== oldData.zPosition) {
@@ -154,6 +159,27 @@ AFRAME.registerComponent("terrain-model", {
     }
   },
 
+  /**
+   * A helper for swapping out a material texture.
+   * Ensures the old texture is disposed.
+   * @param {string} materialProp e.g. 'map' or 'alphaMap'
+   * @param {(THREE.Texture|null)} newTexture
+   */
+  _replaceTexture: function (materialProp, newTexture) {
+    const oldTexture = this.material[materialProp];
+    this.material[materialProp] = newTexture;
+    this.material.needsUpdate = true;
+    if (oldTexture) {
+      oldTexture.dispose();
+    }
+  },
+
+  /**
+   * Sets the z-component of every vector in the position attribute buffer
+   * to the (adjusted) height value from the DEM. Also adjusts the wireframe.
+   * Note:
+   *  positionBuffer.count === the number of vertices in the plane
+   */
   _updatePositionBuffer: function () {
     if (!this.heightData) {
       return;
@@ -176,6 +202,11 @@ AFRAME.registerComponent("terrain-model", {
     this.el.emit("positionBufferUpdated");
   },
 
+  /**
+   * Creates or destroys a terrain wireframe mesh.
+   * A wireframe can be useful for debugging or for visualizing a terrain DEM
+   * without a texture.
+   */
   _toggleWireframe: function () {
     // TODO: Consider creating wireframe on init and hiding/revealing rather
     // than creating the wireframe mesh on demand. Cons: wastes resources for
@@ -184,7 +215,7 @@ AFRAME.registerComponent("terrain-model", {
 
     let oldWireMesh = this.mesh.getObjectByName("terrain-wireframe");
     if (!oldWireMesh) {
-      // This is an inelegant way to prevent adding a wireframe when the
+      // This is a somewhat inelegant way to prevent adding a wireframe when the
       // component initializes.
       if (!this.data.wireframe) {
         return;
@@ -214,6 +245,9 @@ AFRAME.registerComponent("terrain-model", {
     this.material.map.dispose();
     this.material.alphaMap.dispose();
     this.material.dispose();
+    if (this.data.wireframe) {
+      this._toggleWireframe();
+    }
     this.el.removeObject3D("terrain");
   },
 });
