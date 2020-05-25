@@ -8,9 +8,9 @@ This is an A-Frame component for displaying ENVI formatted, digital elevation mo
 
 The basic idea is to create a large plane with a certain width, height, and number of vertices. Each vertex is then repositioned based on elevation from a digital elevation model (DEM). The DEM must be in ENVI format--see [this blog post](http://blog.thematicmapping.org/2013/10/terrain-building-with-threejs-part-1.html) for conversion details.
 
-### Usage
+## Usage
 
-#### Browser
+### Browser
 
 Install and use by directly including the [browser files](dist):
 
@@ -48,9 +48,9 @@ Install and use by directly including the [browser files](dist):
 </html>
 ```
 
-#### npm
+### npm
 
-Install via npm:
+Alternatively, install via npm:
 
 ```bash
 npm install aframe-terrain-model-component
@@ -62,6 +62,8 @@ Then register and use.
 require("aframe");
 require("aframe-terrain-model-component");
 ```
+
+## API
 
 ### Properties
 
@@ -105,9 +107,9 @@ Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling fa
 |       demLoaded       |                            Emitted when a DEM has finished loading                            |
 | positionBufferUpdated | Emitted after the terrain geometry's position attribute buffer has been adjusted by a new DEM |
 
-### FAQ
+## FAQ
 
-#### Does this component work with A-Frame's asset management system?
+### Does this component work with A-Frame's asset management system?
 
 Yes, _kind of_. Assets loaded through the asset management system are cached by three.js' loaders; since this component uses three.js' loaders, textures should not be downloaded twice.
 
