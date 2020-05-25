@@ -8,6 +8,61 @@ This is an A-Frame component for displaying ENVI formatted, digital elevation mo
 
 The basic idea is to create a large plane with a certain width, height, and number of vertices. Each vertex is then repositioned based on elevation from a digital elevation model (DEM). The DEM must be in ENVI format--see [this blog post](http://blog.thematicmapping.org/2013/10/terrain-building-with-threejs-part-1.html) for conversion details.
 
+### Usage
+
+#### Browser
+
+Install and use by directly including the [browser files](dist):
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My A-Frame Scene</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-terrain-model-component@1.0.0/dist/aframe-terrain-model-component.js"></script>
+  </head>
+  <body>
+    <a-scene renderer="antialias: true">
+      <!-- Camera -->
+      <a-entity position="0 80 -200" rotation="0 180 0">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Terrain-->
+      <a-entity
+        terrain-model="map: url(data/noctis-3500-clip-textureRED-resized.jpg);
+          dem: url(data/noctis-3500-clip-envi.bin);
+          planeWidth: 346;
+          planeHeight: 346;
+          segmentsWidth: 199;
+          segmentsHeight: 199;
+          zPosition: 100"
+      ></a-entity>
+
+      <a-sky color="#fff"></a-sky>
+    </a-scene>
+  </body>
+</html>
+```
+
+#### npm
+
+Install via npm:
+
+```bash
+npm install aframe-terrain-model-component
+```
+
+Then register and use.
+
+```js
+require("aframe");
+require("aframe-terrain-model-component");
+```
+
 ### Properties
 
 |    Property    |                                                            Description                                                             | Default Value |
@@ -41,6 +96,14 @@ These values seem to control the "resolution" of the elevation data. [The L.A. T
 > "You'll notice we specified the -outsize parameter, which specifies the number of data points in the output file, and the number of vertices in the plane in the Three.js scene. This can be as high or low as you want, but you'll find that larger values can be very taxing on the graphics processor when rendering the scene. We found that using 300 x 285 provided a good amount of detail without stressing out the GPU too much. For phones, we used a smaller file, 200 x 190, and for some phones even went to a 100 x 95 file, to ensure that the interactive ran smoothly."
 
 Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling factor that alters terrain height. I'm not sure how to determine an accurate value for this; my tactic is to adjust until the result is aesthetically pleasing. The L.A. Times used a value of 100 for their Gale Crater experience, Sandvik used 5 for Jotunheimen, and I used 50 for the crater floor example.
+
+### Events
+
+|         Name          |                                          Description                                          |
+| :-------------------: | :-------------------------------------------------------------------------------------------: |
+|     textureLoaded     |                          Emitted when a texture has finished loading                          |
+|       demLoaded       |                            Emitted when a DEM has finished loading                            |
+| positionBufferUpdated | Emitted after the terrain geometry's position attribute buffer has been adjusted by a new DEM |
 
 ### FAQ
 
@@ -93,58 +156,3 @@ All Mars examples use public domain data from [HiRISE](http://www.uahirise.org//
 - [Faulted Layered Bedrock in Noctis Labyrinthus](http://hirise.lpl.arizona.edu/dtm/dtm.php?ID=ESP_016845_1715).
 - [Crater Floor and Central Mound in Gale Crater (MSL)](http://www.uahirise.org/dtm/dtm.php?ID=PSP_009650_1755).
 - [Olympic-Peninsula](https://www.sciencebase.gov/catalog/item/5646dc56e4b0e2669b311a3b).
-
-### Installation
-
-#### Browser
-
-Install and use by directly including the [browser files](dist):
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>My A-Frame Scene</title>
-    <script src="https://unpkg.com/aframe-terrain-model-component@1.0.0/dist/aframe-terrain-model-component.js"></script>
-    <script src="./aframe-terrain-model-component.js"></script>
-  </head>
-  <body>
-    <a-scene renderer="antialias: true">
-      <!-- Camera -->
-      <a-entity position="0 80 -200" rotation="0 180 0">
-        <a-entity camera look-controls wasd-controls></a-entity>
-      </a-entity>
-
-      <!-- Terrain-->
-      <a-entity
-        terrain-model="map: url(data/noctis-3500-clip-textureRED-resized.jpg);
-          dem: url(data/noctis-3500-clip-envi.bin);
-          planeWidth: 346;
-          planeHeight: 346;
-          segmentsWidth: 199;
-          segmentsHeight: 199;
-          zPosition: 100"
-      ></a-entity>
-
-      <a-sky color="#fff"></a-sky>
-    </a-scene>
-  </body>
-</html>
-```
-
-#### npm
-
-Install via npm:
-
-```bash
-npm install aframe-terrain-model-component
-```
-
-Then register and use.
-
-```js
-require("aframe");
-require("aframe-terrain-model-component");
-```
