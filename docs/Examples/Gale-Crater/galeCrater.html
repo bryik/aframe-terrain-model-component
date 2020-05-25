@@ -1,7 +1,10 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A-Frame Terrain Model Component - Gale Crater</title>
-    <script src="../build.js"></script>
+    <script src="../../build.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
@@ -12,7 +15,13 @@
 
       <!-- Terrain -->
       <a-entity
-        terrain-model="DEM: url(data/Gale_HRSC_DEM_50m_300x285.bin); texture: url(data/Gale_texture_high_4096px.jpg); planeWidth: 2000; planeHeight: 1900; segmentsWidth: 299; segmentsHeight: 284; zPosition: 100;"
+        terrain-model="dem: url(data/Gale_HRSC_DEM_50m_300x285.bin);
+          map: url(data/Gale_texture_high_4096px.jpg);
+          planeWidth: 2000;
+          planeHeight: 1900;
+          segmentsWidth: 299;
+          segmentsHeight: 284;
+          zPosition: 100;"
       ></a-entity>
 
       <!-- Lights -->
@@ -22,7 +31,7 @@
       <a-entity light="type: ambient; color: #999999"></a-entity>
 
       <!-- Sky -->
-      <a-sky color="#ffd4a6"></a-sky>
+      <a-sky color="#ffd4a6" radius="5000"></a-sky>
     </a-scene>
   </body>
 </html>

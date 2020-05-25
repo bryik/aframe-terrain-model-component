@@ -1,0 +1,6 @@
+.sw[ponm]
+docs/build.js
+node_modules/
+npm-debug.log
+docs/
+header-image.png

@@ -1,36 +1,26 @@
 ## aframe-terrain-model-component
 
 <p align="center">
-  <img src="header-image.png" width="728px" height="450px" />
+  <img src="header-image.png" />
 </p>
 
-Two terrain model components for [A-Frame](https://aframe.io). Uses Bjørn Sandvik's [terrain loader](https://github.com/turban/webgl-terrain/blob/master/lib/TerrainLoader.js) and based on code from a tutorial by [the L.A. Times](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/).
+This is an A-Frame component for displaying ENVI formatted, digital elevation models (DEMs).
 
 The basic idea is to create a large plane with a certain width, height, and number of vertices. Each vertex is then repositioned based on elevation from a digital elevation model (DEM). The DEM must be in ENVI format--see [this blog post](http://blog.thematicmapping.org/2013/10/terrain-building-with-threejs-part-1.html) for conversion details.
 
-For a different take on terrain, checkout Morandd's [aframe-heatmap3d](https://github.com/morandd/aframe-heatmap3d) component.
+### Properties
 
-### The Two Components
-
-Initially, this repo housed a single component. However, during the implementation of vertex coloring I realized that it made more sense to split the component into two.
-
-1. `terrain-model` Applies textures to the terrain geometry.
-
-2. `color-terrain-model` Given a valid [colorScheme](#color-schemes) uses [d3.scaleSequential()](https://github.com/d3/d3-scale#sequential-scales) to compute the color of each vertex based on height.
-
-For both components, **DEM**, **planeHeight**, and **planeWidth** properties are mandatory.
-
-### API (shared)
-
-|    Property    |                                      Description                                       | Default Value |
-| :------------: | :------------------------------------------------------------------------------------: | :-----------: |
-|      DEM       |                  Path to digital elevation model data in ENVI format.                  |               |
-|  planeHeight   |                                The height of the plane.                                |               |
-|   planeWidth   |                                The width of the plane.                                 |               |
-| segmentsHeight |                           Width of elevation grid minus one.                           |      199      |
-| segmentsWidth  |                          Height of elevation grid minus one.                           |      199      |
-|   zPosition    | Vertical exaggeration. Lower values will seem flatter, higher values more mountainous. |      1.5      |
-|   wireframe    |                                    Adds a wireframe                                    |     false     |
+|    Property    |                                                            Description                                                             | Default Value |
+| :------------: | :--------------------------------------------------------------------------------------------------------------------------------: | :-----------: |
+|      dem       |                                        Path to digital elevation model data in ENVI format.                                        |               |
+|      map       |                                                      Path to a color texture.                                                      |               |
+|    alphaMap    | The alpha map is a grayscale texture that controls the opacity across the surface (black: fully transparent; white: fully opaque). |               |
+|  planeHeight   |                                                      The height of the plane.                                                      |               |
+|   planeWidth   |                                                      The width of the plane.                                                       |               |
+| segmentsHeight |                                                 Width of elevation grid minus one.                                                 |      199      |
+| segmentsWidth  |                                                Height of elevation grid minus one.                                                 |      199      |
+|   zPosition    |                       Vertical exaggeration. Lower values will seem flatter, higher values more mountainous.                       |      1.5      |
+|   wireframe    |                                                          Adds a wireframe                                                          |     false     |
 
 The relationship between these properties and the DEM data may not be straightforward.
 
@@ -52,97 +42,47 @@ These values seem to control the "resolution" of the elevation data. [The L.A. T
 
 Lastly, **zPosition** controls vertical exaggeration. It is a kind of scaling factor that alters terrain height. I'm not sure how to determine an accurate value for this; my tactic is to adjust until the result is aesthetically pleasing. The L.A. Times used a value of 100 for their Gale Crater experience, Sandvik used 5 for Jotunheimen, and I used 50 for the crater floor example.
 
-### API (`terrain-model`)
+### FAQ
 
-|  Property   |                           Description                            | Default Value |
-| :---------: | :--------------------------------------------------------------: | :-----------: |
-|   texture   |                         Path to texture.                         |               |
-| transparent | Set to true if your texture contains opacity channel (only PNGs) |     false     |
-|  alphaMap   |          Path to a texture to control the alpha channel          |               |
+#### Does this component work with A-Frame's asset management system?
 
-For example,
+Yes, _kind of_. Assets loaded through the asset management system are cached by three.js' loaders; since this component uses three.js' loaders, textures should not be downloaded twice.
 
 ```html
+<a-assets>
+  <img src="data/noctis-3500-clip-textureRED-resized.jpg" />
+  <a-asset-item src="data/noctis-3500-clip-envi.bin"></a-asset-item>
+</a-assets>
+
+<!-- terrain-model 'map' and 'dem' properties use the same URL as assets in <a-assets>  -->
 <a-entity
-  terrain-model="texture: url(noctis-textureRED.jpg);
-                                  DEM: url(noctis-3500-clip-envi.bin);
-                                  planeWidth: 346;
-                                  planeHeight: 346;
-                                  segmentsWidth: 199;
-                                  segmentsHeight: 199;
-                                  zPosition: 100"
->
-</a-entity>
+  terrain-model="map: url(data/noctis-3500-clip-textureRED-resized.jpg); dem: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"
+></a-entity>
 ```
 
-To use transparent terrain textures, there are two options. The simplest is to set 'transparent' to true and supply a texture in PNG format containing opacity information. (Transparent is false by default to limit demand on the GPU.) The only limitation to this approach is that a texture JPG plus an opacity JPG (black and white) may in some cases together be considerably smaller than a single PNG containing a transparent texture. Thus, you can alternatively provide an alphaMap texture (a greyscale image, in any format -- e.g. JPG if lossy compression is OK). Then this component will combine the texture and alphaMap.
-
-### API (`color-terrain-model`)
-
-|  Property   |                           Description                           | Default Value |
-| :---------: | :-------------------------------------------------------------: | :-----------: |
-| colorScheme | A string indicating the interpolator to use for vertex coloring |   "viridis"   |
-
-For example,
+However, passing resources by selector is not currently supported.
 
 ```html
+<a-assets>
+  <img id="noctisTexture" src="data/noctis-3500-clip-textureRED-resized.jpg" />
+  <a-asset-item src="data/noctis-3500-clip-envi.bin"></a-asset-item>
+</a-assets>
+
+<!-- '#noctisTexture' will not work! -->
 <a-entity
-  color-terrain-model="colorScheme: magma;
-                               DEM: url(noctis-3500-clip-envi.bin);
-                               planeWidth: 346;
-                               planeHeight: 346;
-                               segmentsWidth: 199;
-                               segmentsHeight: 199;
-                               zPosition: 100"
->
-</a-entity>
+  terrain-model="map: #noctisTexture; dem: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"
+></a-entity>
 ```
 
-While it is possible to use A-Frame's asset management system to load textures and terrain data, this is currently **not recommended**. See [this issue](https://github.com/bryik/aframe-terrain-model-component/issues/10) for more information.
-
-#### Color Schemes
-
-The following D3 interpolators are available (images copied from [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic)):
-
-<a name="interpolateViridis" href="#interpolateViridis">#</a> <b>viridis</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/viridis.png" width="100%" height="40" alt="viridis">
-
-<a name="interpolateInferno" href="#interpolateInferno">#</a> <b>inferno</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/inferno.png" width="100%" height="40" alt="inferno">
-
-<a name="interpolateMagma" href="#interpolateMagma">#</a> <b>magma</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/magma.png" width="100%" height="40" alt="magma">
-
-<a name="interpolatePlasma" href="#interpolatePlasma">#</a> <b>plasma</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/plasma.png" width="100%" height="40" alt="plasma">
-
-<a name="interpolateWarm" href="#interpolateWarm">#</a> <b>warm</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/warm.png" width="100%" height="40" alt="warm">
-
-<a name="interpolateCool" href="#interpolateCool">#</a> <b>cool</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/cool.png" width="100%" height="40" alt="cool">
-
-<a name="interpolateRainbow" href="#interpolateRainbow">#</a> <b>rainbow</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/rainbow.png" width="100%" height="40" alt="rainbow">
-
-<a name="interpolateCubehelixDefault" href="#interpolateCubehelixDefault">#</a> <b>cubehelix</b>
-
-<img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/cubehelix.png" width="100%" height="40" alt="cubehelix">
-
-### References
+## References
 
 - "Terrain Building with Three.js" by Bjørn Sandvik (Parts [I](http://blog.thematicmapping.org/2013/10/terrain-building-with-threejs-part-1.html), [II](http://blog.thematicmapping.org/2013/10/terrain-building-with-threejs.html), and [III](http://blog.thematicmapping.org/2013/10/textural-terrains-with-threejs.html))
 - ["Discovering Gale Crater: How we did it"](http://graphics.latimes.com/mars-gale-crater-how-we-did-it/) by Armand Emamdjomeh and Len Degroot
 - ["vr-interactives-three-js"](https://github.com/datadesk/vr-interactives-three-js) by Armand Emamdjomeh
 
 Till Hinrichs' [orbit-controls-component](https://github.com/tizzle/aframe-orbit-controls-component) is used in some of the examples.
+
+For a different take on terrain, checkout Morandd's [aframe-heatmap3d](https://github.com/morandd/aframe-heatmap3d) component.
 
 **Data (DEM and textures)**
 
@@ -167,9 +107,8 @@ Install and use by directly including the [browser files](dist):
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My A-Frame Scene</title>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-terrain-model-component@0.2.3/dist/aframe-terrain-model-component.min.js"></script>
-    <script src="../build.js"></script>
+    <script src="https://unpkg.com/aframe-terrain-model-component@1.0.0/dist/aframe-terrain-model-component.js"></script>
+    <script src="./aframe-terrain-model-component.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
@@ -180,7 +119,13 @@ Install and use by directly including the [browser files](dist):
 
       <!-- Terrain-->
       <a-entity
-        terrain-model="texture: url(data/noctis-3500-clip-textureRED-resized.jpg); DEM: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"
+        terrain-model="map: url(data/noctis-3500-clip-textureRED-resized.jpg);
+          dem: url(data/noctis-3500-clip-envi.bin);
+          planeWidth: 346;
+          planeHeight: 346;
+          segmentsWidth: 199;
+          segmentsHeight: 199;
+          zPosition: 100"
       ></a-entity>
 
       <a-sky color="#fff"></a-sky>

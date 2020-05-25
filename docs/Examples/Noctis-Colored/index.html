@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A-Frame Terrain Model Component - Noctis Colored</title>
+    <script src="../../build.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/aframe-orbit-controls@1.2.0/dist/aframe-orbit-controls.min.js"></script>
+  </head>
+  <body>
+    <a-scene renderer="antialias: true">
+      <!-- Orbit cam -->
+      <a-entity id="camera" camera orbit-controls="initialPosition: 0 80 -350">
+      </a-entity>
+
+      <!-- Terrain-->
+      <a-entity
+        id="terrain"
+        terrain-model="dem: url(../Noctis/data/noctis-3500-clip-envi.bin);
+          planeWidth: 346;
+          planeHeight: 346;
+          segmentsWidth: 199;
+          segmentsHeight: 199;
+          zPosition: 100;
+          wireframe: true"
+      >
+      </a-entity>
+
+      <!-- Sky -->
+      <a-sky color="lightgrey"></a-sky>
+    </a-scene>
+    <script>
+      const scene = document.querySelector("a-scene");
+      const terrainEl = scene.querySelector("#terrain");
+
+      // Setup a scale mapping heights to colors.
+      // The height data has been prepared such that values fall between 0 and the
+      // highest number that can be represented by an unsigned 16-bit binary
+      // number (65535).
+      const colorScale = d3
+        .scaleSequential(d3.interpolateInferno)
+        .domain([0, 65535]);
+
+      // Wait for the terrain to finish loading.
+      // 'positionBufferUpdated' is a good proxy for this as it is emitted after
+      // the DEM has loaded.
+      terrainEl.addEventListener("positionBufferUpdated", colorize);
+
+      function colorize() {
+        // The terrain-model component stores the raw height values on itself.
+        const heightData = terrainEl.components["terrain-model"].heightData;
+
+        // Retrive the terrain mesh, geometry, and material.
+        const terrainMesh = terrainEl.getObject3D("terrain");
+        const terrainGeo = terrainMesh.geometry;
+        const terrainMat = terrainMesh.material;
+
+        // Pull out the position attribute buffer.
+        const posAb = terrainGeo.getAttribute("position");
+
+        // Create a color attribute buffer with colors derived from height and
+        // our color scale.
+        // Formula for size of new buffer attribute array is: numVertices * itemSize
+        const colorArray = new Uint8Array(posAb.count * 3);
+        const colorAb = new THREE.BufferAttribute(colorArray, 3, true);
+        for (let i = 0; i < posAb.count; i++) {
+          let height = heightData[i];
+          let colorValue = d3.color(colorScale(height));
+          colorAb.setXYZ(i, colorValue.r, colorValue.g, colorValue.b);
+        }
+
+        // Add the new buffer.
+        terrainGeo.setAttribute("color", colorAb);
+        // Turn on vertex colors and update the material.
+        terrainMat.vertexColors = true;
+        terrainMat.needsUpdate = true;
+      }
+    </script>
+  </body>
+</html>

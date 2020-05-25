@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A-Frame Terrain Model Component - Olympic Peninsula</title>
-    <script src="../build.js"></script>
+    <script src="../../build.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
@@ -15,7 +15,13 @@
 
       <!-- Terrain -->
       <a-entity
-        terrain-model="DEM: url(data/clipped-envi.bin); texture: url(data/olympic-texture.jpg); planeWidth: 287; planeHeight: 151; segmentsWidth: 287; segmentsHeight: 151; zPosition: 50;"
+        terrain-model="dem: url(data/clipped-envi.bin);
+          map: url(data/olympic-texture.jpg);
+          planeWidth: 287;
+          planeHeight: 151;
+          segmentsWidth: 287;
+          segmentsHeight: 151;
+          zPosition: 50;"
       ></a-entity>
 
       <!-- Sky -->

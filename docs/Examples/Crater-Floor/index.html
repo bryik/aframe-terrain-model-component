@@ -1,7 +1,10 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A-Frame Terrain Model Component - Crater Floor</title>
-    <script src="../build.js"></script>
+    <script src="../../build.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
@@ -12,7 +15,13 @@
 
       <!-- Terrain -->
       <a-entity
-        terrain-model="DEM: url(data/clipped-envi3.bin); texture: url(data/MRGB-handclipped.jpg); planeWidth: 99.8; planeHeight: 99.8; segmentsWidth: 199; segmentsHeight: 199; zPosition: 50;"
+        terrain-model="dem: url(data/clipped-envi3.bin);
+          map: url(data/MRGB-handclipped.jpg);
+          planeWidth: 99.8;
+          planeHeight: 99.8;
+          segmentsWidth: 199;
+          segmentsHeight: 199;
+          zPosition: 50;"
       ></a-entity>
 
       <!-- Sky -->

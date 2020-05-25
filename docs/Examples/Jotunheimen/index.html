@@ -4,18 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A-Frame Terrain Model Component - Jotunheimen</title>
-    <script src="../build.js"></script>
+    <script src="../../build.js"></script>
+    <script src="https://unpkg.com/aframe-orbit-controls@1.2.0/dist/aframe-orbit-controls.min.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
       <!-- Camera -->
-      <a-entity position="0 20 25">
-        <a-entity camera look-controls wasd-controls></a-entity>
-      </a-entity>
+      <a-entity camera orbit-controls="initialPosition: -42 46 -11"> </a-entity>
 
       <!-- Terrain -->
       <a-entity
-        terrain-model="DEM: url(data/jotunheimen.bin); texture: url(data/jotunheimen-texture.jpg); planeWidth: 60; planeHeight: 60; segmentsWidth: 199; segmentsHeight: 199; zPosition: 5;"
+        terrain-model="dem: url(data/jotunheimen.bin);
+          map: url(data/jotunheimen-texture.jpg);
+          planeWidth: 60;
+          planeHeight: 60;
+          segmentsWidth: 199;
+          segmentsHeight: 199;
+          zPosition: 5;"
       ></a-entity>
 
       <!-- Sky -->
