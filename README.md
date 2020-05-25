@@ -107,8 +107,8 @@ Install and use by directly including the [browser files](dist):
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My A-Frame Scene</title>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-terrain-model-component@0.2.3/dist/aframe-terrain-model-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-terrain-model-component@1.0.0/dist/aframe-terrain-model-component.js"></script>
+    <script src="./aframe-terrain-model-component.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
@@ -119,7 +119,13 @@ Install and use by directly including the [browser files](dist):
 
       <!-- Terrain-->
       <a-entity
-        terrain-model="texture: url(data/noctis-3500-clip-textureRED-resized.jpg); DEM: url(data/noctis-3500-clip-envi.bin); planeWidth: 346; planeHeight: 346; segmentsWidth: 199; segmentsHeight: 199; zPosition: 100"
+        terrain-model="map: url(data/noctis-3500-clip-textureRED-resized.jpg);
+          dem: url(data/noctis-3500-clip-envi.bin);
+          planeWidth: 346;
+          planeHeight: 346;
+          segmentsWidth: 199;
+          segmentsHeight: 199;
+          zPosition: 100"
       ></a-entity>
 
       <a-sky color="#fff"></a-sky>
