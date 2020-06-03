@@ -1,13 +1,13 @@
 {
   "name": "aframe-terrain-model-component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Terrain model components for A-Frame.",
   "main": "index.js",
   "scripts": {
     "build": "browserify docs/main.js -o docs/build.js",
     "dev": "budo docs/main.js:build.js --dir docs --port 8000 --live --open",
     "dev-ssl": "budo docs/main.js:build.js --dir docs --port 8000 --live --open --ssl",
-    "dist": "webpack index.js dist/aframe-terrain-model-component.js",
+    "dist": "webpack --config webpack.dev.config.js && webpack --config webpack.config.js",
     "postpublish": "npm run dist"
   },
   "repository": {
@@ -35,7 +35,7 @@
     "budo": "^11.6.3",
     "envify": "^4.1.0",
     "prettier": "^2.0.5",
-    "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony-v2.8.22",
-    "webpack": "^2.5.1"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
