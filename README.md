@@ -22,7 +22,7 @@ Install and use by directly including the [browser files](dist):
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My A-Frame Scene</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-terrain-model-component@1.0.0/dist/aframe-terrain-model-component.js"></script>
+    <script src="https://unpkg.com/aframe-terrain-model-component@1.0.1/dist/aframe-terrain-model-component.min.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true">
